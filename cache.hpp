@@ -25,7 +25,7 @@ class Cache {
   Cache(size_t capacity) : capacity(capacity) {}
 
   void put(K key, V value) {
-    std::lock_guard<std::mutex> lock(mutex);
+    std::lock_guard<std::mutex> lock(cache_mutex);
     auto it = cache.find(key);
     if (it != cache.end()) {
       // Key already exists, update value and move to front of LRU list
