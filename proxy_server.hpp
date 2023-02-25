@@ -123,24 +123,8 @@ class session : public std::enable_shared_from_this<session> {
         res_,
         beast::bind_front_handler(&session::on_connect_response, shared_from_this()));
   }
-  void handle_get_request() {
-    res_ = {http::status::ok, req_.version()};
-    res_.keep_alive(true);
-    res_.prepare_payload();
-    http::async_write(
-        client_,
-        res_,
-        beast::bind_front_handler(&session::on_connect_response, shared_from_this()));
-  }
-  void handle_post_request() {
-    res_ = {http::status::ok, req_.version()};
-    res_.keep_alive(true);
-    res_.prepare_payload();
-    http::async_write(
-        client_,
-        res_,
-        beast::bind_front_handler(&session::on_connect_response, shared_from_this()));
-  }
+  void handle_get_request() {}
+  void handle_post_request() {}
 
   void on_connect_response(boost::system::error_code ec, std::size_t bytes_transferred) {
     boost::ignore_unused(bytes_transferred);
