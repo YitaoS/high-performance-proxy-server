@@ -1,1 +1,1 @@
-proxy: log_writer.hpp
+proxy: log_writer.cpp log_writer.hpp

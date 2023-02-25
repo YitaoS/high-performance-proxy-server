@@ -19,4 +19,4 @@ proxy: proxy_server.cpp log_writer.cpp
 
 .PHNOY:
 clean:
-	rm -rf *~ *.o *.d
+	rm -rf *~ *.o *.d proxy

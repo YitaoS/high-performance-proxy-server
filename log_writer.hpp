@@ -29,10 +29,10 @@ class LogWriter {
   LogWriter(std::ofstream & log) : id(0), logfile(log) {}
   template<class Body, class Allocator>
   void write_log(const http::request<Body, http::basic_fields<Allocator> > && request,
-                 std::string client_address) {
+                 std::string address) {
     std::lock_guard<std::mutex> lock(log_mutex);
     logfile << id << ": \"" << request.method_string() << " " << request.target() << " "
-            << "HTTP/" << request.version() << "\" from " << client_address << " @ "
+            << "HTTP/" << request.version() << "\" from " << address << " @ "
             << current_utc_time() << std::endl;
     id++;
   }
