@@ -102,14 +102,14 @@ class session : public std::enable_shared_from_this<session> {
 	*/
     std::cout << "Connected to " << server_.socket().remote_endpoint() << std::endl;
     server_.expires_after(std::chrono::seconds(15));
-    if (req_.method() != http::verb::connect) {
+    if (req_.method() == http::verb::connect) {
       //other method to do
       handle_connect_request();
     }
-    else if (req_.method() != http::verb::get) {
+    else if (req_.method() == http::verb::get) {
       handle_get_request();
     }
-    else if (req_.method() != http::verb::post) {
+    else if (req_.method() == http::verb::post) {
       handle_post_request();
     }
   }
