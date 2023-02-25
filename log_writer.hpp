@@ -26,14 +26,13 @@ class LogWriter {
   std::string current_utc_time();
 
  public:
-  LogWriter(std::ofstream & log) : id(0), logfile(log) {}
+  LogWriter(int id, std::ofstream & log) : id(id), logfile(log) {}
   template<class Body, class Allocator>
-  void write_log(const http::request<Body, http::basic_fields<Allocator> > && request,
+  void write_log(const http::request<Body, http::basic_fields<Allocator> > & request,
                  std::string address) {
     std::lock_guard<std::mutex> lock(log_mutex);
     logfile << id << ": \"" << request.method_string() << " " << request.target() << " "
             << "HTTP/" << request.version() << "\" from " << address << " @ "
             << current_utc_time() << std::endl;
-    id++;
   }
 };
