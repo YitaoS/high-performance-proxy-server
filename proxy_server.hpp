@@ -25,9 +25,7 @@ namespace http = beast::http;      // from <boost/beast/http.hpp>
 namespace net = boost::asio;       // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
 
-void fail(beast::error_code ec, char const * what) {
-  std::cerr << what << ": " << ec.message() << "\n";
-}
+
 
 class session : public std::enable_shared_from_this<session> {
   beast::tcp_stream client_;
@@ -39,10 +37,19 @@ class session : public std::enable_shared_from_this<session> {
 	//tcp::resolver server_resolver_;
 	bool connecting = false;
 
-	void send_ok_response(beast::tcp_stream &client_stream){
-    std::string response = "HTTP/1.1 200 OK\r\n\r\n";
-  	boost::asio::write(client_, boost::asio::buffer(response));
-}
+	void fail(beast::error_code ec, char const * what) {
+		connecting = false;
+		do_close();
+		std::cerr << what << ": " << ec.message() << "\n";
+	}
+	void do_close() {
+    // Send a TCP shutdown
+    beast::error_code ec;
+    client_.socket().shutdown(tcp::socket::shutdown_send, ec);
+		server_.socket().shutdown(tcp::socket::shutdown_send, ec);
+    // At this point the connection is closed gracefully
+  }
+
 public:
   // Take ownership of the stream
 	session(tcp::socket&& socket, LogWriter& lw)
@@ -56,12 +63,14 @@ public:
     // on the I/O objects in this session. Although not strictly necessary
     // for single-threaded contexts, this example code is written to be
     // thread-safe by default.
+		client_.expires_after(std::chrono::seconds(15));
     http::async_read(client_, lead_in_, req_, 
 										beast::bind_front_handler(&session::on_connect_request, shared_from_this()));
   }
 
 	void on_connect_request(boost::system::error_code ec, std::size_t bytes_transferred) {
-		if (ec.failed() || req_.method() != http::verb::connect){
+		boost::ignore_unused(bytes_transferred);
+		if (ec.failed()){
 			return fail(ec, "on connect request");
 		}
 		std::cout << "Connect request: " << req_ << std::endl;
@@ -78,13 +87,19 @@ public:
 												beast::bind_front_handler(&session::on_connect, shared_from_this()));
 	}
 
-	void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type){
+	void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type endpoint){
 		if (ec) {
 			// may need to send back bad response to client
 			return fail(ec, "on connect");
 		}
 		std::cout << "Connected to " << server_.socket().remote_endpoint() << std::endl;
-		server_.expires_after(std::chrono::seconds(30));
+		server_.expires_after(std::chrono::seconds(15));
+		if (req_.method() != http::verb::connect){
+			handle_client_server_IO();
+		}
+		else {
+			connecting = true;
+		}
 		res_ = {http::status::ok, req_.version()};
 		res_.keep_alive(true);
 		res_.prepare_payload();
@@ -93,12 +108,67 @@ public:
 	}
 
 	void on_connect_response(boost::system::error_code ec, std::size_t bytes_transferred){
+		boost::ignore_unused(bytes_transferred);
 		if (ec) {
 			return fail(ec, "on connect response");
 		}
-		// http::async_read(client_, lead_in_, req_, 
-		// 								beast::bind_front_handler(&session::on_connect_request, shared_from_this()));
+		handle_client_server_IO();
 	}
+
+	void handle_client_server_IO(){
+		if (req_.method() == http::verb::get || req_.method() == http::verb::post){
+			if (connecting){
+				http::async_read(client_, lead_in_, req_, 
+											beast::bind_front_handler(&session::on_read_client, shared_from_this()));
+			}
+			else {
+				////// CAN SEARCH CACHE HERE ////////
+				http::async_write(server_, req_,
+											beast::bind_front_handler(&session::on_write_server, shared_from_this()));
+			}
+		}
+	}
+
+	void on_read_client(beast::error_code ec, std::size_t bytes_transferred){
+		boost::ignore_unused(bytes_transferred);
+		if (ec) {
+			return fail(ec, "on read client");
+		}
+		std::cout<<"read from client: "<<req_<<std::endl;
+		http::async_write(server_, req_,
+											beast::bind_front_handler(&session::on_write_server, shared_from_this()));
+	}
+
+	void on_write_server(beast::error_code ec, std::size_t bytes_transferred){
+		boost::ignore_unused(bytes_transferred);
+		if (ec) {
+			return fail(ec, "on write server");
+		}
+		http::async_read(server_, lead_in_, res_, 
+										beast::bind_front_handler(&session::on_read_server, shared_from_this()));
+	}
+
+	void on_read_server(beast::error_code ec, std::size_t bytes_transferred){
+		boost::ignore_unused(bytes_transferred);
+		if (ec) {
+			return fail(ec, "on read server");
+		}
+		if (!connecting){//// CAN SAVE CACHE HERE ////}
+			http::async_write(client_, res_,
+												beast::bind_front_handler(&session::on_write_client, shared_from_this()));
+		}
+	}
+
+	void on_write_client(beast::error_code ec, std::size_t bytes_transferred){
+		boost::ignore_unused(bytes_transferred);
+		if (ec) {
+			return fail(ec, "on write client");
+		}
+		if (connecting){
+			on_connect(ec, server_.socket().remote_endpoint());
+		}
+	}
+};
 
   // void do_read() {
   //   // Make the request empty before reading,
@@ -237,14 +307,8 @@ public:
   //   do_read();
   // }
 
-  void do_close() {
-    // Send a TCP shutdown
-    beast::error_code ec;
-    client_.socket().shutdown(tcp::socket::shutdown_send, ec);
-		server_.socket().shutdown(tcp::socket::shutdown_send, ec);
-    // At this point the connection is closed gracefully
-  }
-};
+  
+
 
 class listener : public std::enable_shared_from_this<listener> {
   net::io_context & ioc_;
@@ -253,6 +317,9 @@ class listener : public std::enable_shared_from_this<listener> {
   Cache<std::string, CachedResponse> http_cache;
   //std::shared_ptr<std::string const> doc_root_;
 
+	void fail(beast::error_code ec, char const * what) {
+		std::cerr << what << ": " << ec.message() << "\n";
+	}
  public:
   listener(net::io_context & ioc,
            tcp::endpoint endpoint,
@@ -310,8 +377,9 @@ class listener : public std::enable_shared_from_this<listener> {
       // Create the session and run it
       std::make_shared<session>(std::move(socket), lw_)->run();
     }
+		do_accept();
 
     // Accept another connection
-    do_accept();
+    
   }
 };
