@@ -19,11 +19,13 @@
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 #include "cache.hpp"
 #include "log_writer.hpp"
+#include "request_handler.hpp"
 
 namespace beast = boost::beast;    // from <boost/beast.hpp>
 namespace http = beast::http;      // from <boost/beast/http.hpp>
 namespace net = boost::asio;       // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
+using socket_type = tcp::socket;
 
 class session : public std::enable_shared_from_this<session> {
   beast::tcp_stream client_;
@@ -89,25 +91,48 @@ class session : public std::enable_shared_from_this<session> {
         eps, beast::bind_front_handler(&session::on_connect, shared_from_this()));
   }
 
-  void on_connect(beast::error_code ec,
-                  tcp::resolver::results_type::endpoint_type endpoint) {
+  void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type) {
     if (ec) {
       // may need to send back bad response to client
       return fail(ec, "on connect");
     }
 
     /***
- * here connection to server has been built
-*/
+	 * here connection to server has been built
+	*/
     std::cout << "Connected to " << server_.socket().remote_endpoint() << std::endl;
     server_.expires_after(std::chrono::seconds(15));
     if (req_.method() != http::verb::connect) {
       //other method to do
-      handle_client_server_IO();
+      handle_connect_request();
     }
-    else {
-      connecting = true;
+    else if (req_.method() != http::verb::get) {
+      handle_get_request();
     }
+    else if (req_.method() != http::verb::post) {
+      handle_post_request();
+    }
+  }
+
+  void handle_connect_request() {
+    res_ = {http::status::ok, req_.version()};
+    res_.keep_alive(true);
+    res_.prepare_payload();
+    http::async_write(
+        client_,
+        res_,
+        beast::bind_front_handler(&session::on_connect_response, shared_from_this()));
+  }
+  void handle_get_request() {
+    res_ = {http::status::ok, req_.version()};
+    res_.keep_alive(true);
+    res_.prepare_payload();
+    http::async_write(
+        client_,
+        res_,
+        beast::bind_front_handler(&session::on_connect_response, shared_from_this()));
+  }
+  void handle_post_request() {
     res_ = {http::status::ok, req_.version()};
     res_.keep_alive(true);
     res_.prepare_payload();
@@ -141,6 +166,9 @@ class session : public std::enable_shared_from_this<session> {
             req_,
             beast::bind_front_handler(&session::on_write_server, shared_from_this()));
       }
+    }
+
+    if (req_.method() == http::verb::connect) {
     }
   }
 
@@ -401,7 +429,6 @@ class listener : public std::enable_shared_from_this<listener> {
     else {
       // Create the session and run it
       std::make_shared<session>(std::move(socket), num_of_session++, logfile)->run();
-      ;
     }
     do_accept();
 
