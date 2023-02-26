@@ -157,6 +157,13 @@ class session : public std::enable_shared_from_this<session> {
     std::string status_message = std::string(resp.reason());
     //store body
     cached_resp.body = resp.body();
+    //store e-tag
+    const auto & headers = resp.base();
+    auto it = headers.find(boost::beast::http::field::etag);
+    if (it != headers.end()) {
+      cached_resp.e_tag = it->value();
+      // use the e_tag value as needed
+    }
     //store content type
     auto content_type = resp.find(http::field::content_type);
     if (content_type != resp.end()) {
@@ -236,6 +243,9 @@ class session : public std::enable_shared_from_this<session> {
   }
   bool can_be_cached(const http::response<http::string_body> & resp) {
     const auto & headers = resp.base();
+    if (resp.chunked() == true) {
+      return false;
+    }
     // Check if the response has a Cache-Control header
     if (headers.find(boost::beast::http::field::cache_control) != headers.end()) {
       // Get the value of the Cache-Control header

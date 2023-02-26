@@ -7,6 +7,7 @@
 class CachedResponse {
  public:
   bool must_revalidate{false};
+  std::string e_tag{""};
   int status_code{0};
   std::string status_message{""};
   std::string server{""};
