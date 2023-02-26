@@ -1,9 +1,11 @@
 #include <boost/asio.hpp>
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/strand.hpp>
+#include <boost/beast.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/config.hpp>
 
 #include <algorithm>
@@ -21,11 +23,11 @@ pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 #include "log_writer.hpp"
 #include "request_handler.hpp"
 
-namespace beast = boost::beast;    // from <boost/beast.hpp>
-namespace http = beast::http;      // from <boost/beast/http.hpp>
-namespace net = boost::asio;       // from <boost/asio.hpp>
+namespace beast = boost::beast;  // from <boost/beast.hpp>
+namespace http = beast::http;    // from <boost/beast/http.hpp>
+namespace net = boost::asio;     // from <boost/asio.hpp>
+namespace ph = boost::asio::placeholders;
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
-using socket_type = tcp::socket;
 
 
 
@@ -33,6 +35,8 @@ class session : public std::enable_shared_from_this<session> {
   beast::tcp_stream client_;
   beast::tcp_stream server_;
   net::streambuf lead_in_;
+  std::array<uint8_t, 8192> client_buf_;
+  std::array<uint8_t, 8192> server_buf_;
   http::request<http::empty_body> req_;
   http::response<http::empty_body> res_;
   LogWriter lw_;
@@ -128,10 +132,11 @@ class session : public std::enable_shared_from_this<session> {
     res_ = {http::status::ok, req_.version()};
     res_.keep_alive(true);
     res_.prepare_payload();
+    auto self = shared_from_this();
     http::async_write(
         client_,
         res_,
-        beast::bind_front_handler(&session::on_connect_response, shared_from_this()));
+        boost::bind(&session::on_connect_response, shared_from_this(), ph::error));
   }
 
   void handle_get_request() {
@@ -228,205 +233,60 @@ class session : public std::enable_shared_from_this<session> {
     do_close();
   }
 
+  // void on_connect_response(boost::system::error_code ec, std::size_t bytes_transferred) {
+  //   handle_IO(ec, bytes_transferred, "on connect response");
+  //   handle_client_server_IO();
+
+  void on_connect_response(boost::system::error_code ec) {
+    if (!ec) {
+      client_do_read();
+      server_do_read();
+    }
+  }
+  void client_do_read() {
+    client_.socket().async_read_some(boost::asio::buffer(client_buf_),
+                                     boost::bind(&session::client_on_read,
+                                                 shared_from_this(),
+                                                 ph::error,
+                                                 ph::bytes_transferred));
+  }
+  void client_on_read(boost::system::error_code ec, size_t xfer) {
+    if (!ec)
+      async_write(
+          server_.socket(),
+          boost::asio::buffer(client_buf_, xfer),
+          boost::bind(&session::client_on_written, shared_from_this(), ph::error));
+  }
+  void client_on_written(boost::system::error_code ec) {
+    if (!ec)
+      client_do_read();
+  }
+  void server_do_read() {
+    server_.socket().async_read_some(boost::asio::buffer(server_buf_),
+                                     boost::bind(&session::server_on_read,
+                                                 shared_from_this(),
+                                                 ph::error,
+                                                 ph::bytes_transferred));
+  }
+  void server_on_read(boost::system::error_code ec, size_t xfer) {
+    if (!ec)
+      async_write(
+          client_.socket(),
+          boost::asio::buffer(server_buf_, xfer),
+          boost::bind(&session::server_on_written, shared_from_this(), ph::error));
+  }
+  void server_on_written(boost::system::error_code ec) {
+    if (!ec)
+      server_do_read();
+  }
+
   void on_connect_response(boost::system::error_code ec, std::size_t bytes_transferred) {
-    handle_IO(ec, bytes_transferred, "on connect response");
-    handle_client_server_IO();
-  }
-
-  void handle_client_server_IO() {
-    if (req_.method() == http::verb::get || req_.method() == http::verb::post) {
-      if (connecting) {
-        http::async_read(
-            client_,
-            lead_in_,
-            req_,
-            beast::bind_front_handler(&session::on_read_client, shared_from_this()));
-      }
-      else {
-        ////// CAN SEARCH CACHE HERE ////////
-        http::async_write(
-            server_,
-            req_,
-            beast::bind_front_handler(&session::on_write_server, shared_from_this()));
-      }
-    }
-
-    if (req_.method() == http::verb::connect) {
-    }
-  }
-
-  void on_read_client(beast::error_code ec, std::size_t bytes_transferred) {
-    handle_IO(ec, bytes_transferred, "on read client");
-    std::cout << "read from client: " << req_ << std::endl;
-    http::async_write(
-        server_,
-        req_,
-        beast::bind_front_handler(&session::on_write_server, shared_from_this()));
-  }
-
-  void on_write_server(beast::error_code ec, std::size_t bytes_transferred) {
-    handle_IO(ec, bytes_transferred, "on write server");
-    http::async_read(
-        server_,
-        lead_in_,
-        res_,
-        beast::bind_front_handler(&session::on_read_server, shared_from_this()));
-  }
-
-  void on_read_server(beast::error_code ec, std::size_t bytes_transferred) {
-    handle_IO(ec, bytes_transferred, "on read server");
-    if (!connecting) {  //// CAN SAVE CACHE HERE ////}
-      http::async_write(
-          client_,
-          res_,
-          beast::bind_front_handler(&session::on_write_client, shared_from_this()));
-    }
-  }
-
-  void on_write_client(beast::error_code ec, std::size_t bytes_transferred) {
-    handle_IO(ec, bytes_transferred, "on write client");
-    if (connecting) {
-      on_connect(ec, server_.socket().remote_endpoint());
+    boost::ignore_unused(bytes_transferred);
+    if (ec) {
+      return fail(ec, "on connect response");
     }
   }
 };
-
-// void do_read() {
-//   // Make the request empty before reading,
-//   // otherwise the operation behavior is undefined.
-//   req_ = {};
-
-//   // Set the timeout.
-//   stream_.expires_after(std::chrono::seconds(30));
-
-//   // Read a request
-//   http::async_read(stream_,
-//                    buffer_,
-//                    req_,
-//                    beast::bind_front_handler(&session::on_read, shared_from_this()));
-// }
-
-// void on_read(beast::error_code ec, std::size_t bytes_transferred) {
-//   boost::ignore_unused(bytes_transferred);
-
-//   // This means they closed the connection
-//   if (ec == http::error::end_of_stream)
-//     return do_close();
-
-//   if (ec)
-//     return fail(ec, "read");
-
-//   // write the log file
-//   std::string client_addr = stream_.socket().remote_endpoint().address().to_string();
-//   lw_.write_log(std::move(req_), client_addr);
-//   handle_request(req_);
-// }
-
-// void handle_request(http::request<http::string_body> server_req){
-// 	// If bad request send response to user.
-// 	// Extract the hostname and port from the request object
-// 	beast::string_view host_str = server_req.base().at("Host");
-// 	std::string host = host_str.to_string();
-// 	std::string port = "80"; // default port number is 80 for HTTP
-// 	std::size_t colon_pos = host.find(":");
-// 	if (colon_pos != std::string::npos) {
-// 			port = host.substr(colon_pos + 1);
-// 			host = host.substr(0, colon_pos);
-// 	}
-// 	std::cout<<host<<","<<port<<std::endl;
-// 	connect_server(host.c_str(), port.c_str());
-// }
-
-// void connect_server(char const* host, char const* port){
-// 	std::cout<<"connect server"<<std::endl;
-// server_resolver_.async_resolve(
-//     host,
-//     port,
-//     beast::bind_front_handler(
-//         &session::server_on_resolve,
-//         shared_from_this()
-//     )
-// );
-//}
-
-// void server_on_resolve(beast::error_code ec, tcp::resolver::results_type results){
-//   if (ec){
-//       return fail(ec, "resolve");
-//   }
-//   server_stream_.async_connect(
-//       results,
-//       beast::bind_front_handler(&session::server_on_connect, shared_from_this())
-//   );
-// }
-
-// void server_on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type){
-// 	if(ec){
-// 			return fail(ec, "connect");
-// 	}
-// 	// Set a timeout on the operation
-// 	server_stream_.expires_after(std::chrono::seconds(30));
-// 	// send client an ok response if the request is CONNECT
-// 	if (req_.method() == http::verb::connect){
-// 			connecting = true;
-// 			send_ok_response(stream_);
-// 			// call back to listening to client request
-// 	}
-// 	// Send the HTTP request to the remote host
-// 	http::async_write(server_stream_, req_,
-// 			beast::bind_front_handler(
-// 					&session::server_on_write,
-// 					shared_from_this()));
-// }
-
-// void server_on_write(beast::error_code ec, std::size_t bytes_transferred){
-//   boost::ignore_unused(bytes_transferred);
-//   if(ec){
-//       return fail(ec, "write");
-//   }
-//   // Receive the HTTP response
-//   http::async_read(server_stream_, server_buffer_, res_,
-//       beast::bind_front_handler(
-//           &session::server_on_read,
-//           shared_from_this()));
-// }
-
-// void server_on_read(beast::error_code ec, std::size_t bytes_transferred){
-// 	boost::ignore_unused(bytes_transferred);
-// 	if (ec){
-// 			return fail(ec, "read");
-// 	}
-// 	// Write the message to standard out
-// 	//// log & cache
-// 	std::cout << res_ << std::endl;
-// 	// response to the client
-// 	//send_response_to_client(client_stream_);
-// }
-
-// void send_response(http::message_generator && msg) {
-//   bool keep_alive = msg.keep_alive();
-
-//   // Write the response
-//   http::async_write(
-//       stream_,
-//       std::move(msg),
-//       beast::bind_front_handler(&session::on_write, shared_from_this(), keep_alive));
-// }
-
-// void on_write(bool keep_alive, beast::error_code ec, std::size_t bytes_transferred) {
-//   boost::ignore_unused(bytes_transferred);
-
-//   if (ec)
-//     return fail(ec, "write");
-
-//   if (!keep_alive) {
-//     // This means we should close the connection, usually because
-//     // the response indicated the "Connection: close" semantic.
-//     return do_close();
-//   }
-
-//   // Read another request
-//   do_read();
-// }
 
 class listener : public std::enable_shared_from_this<listener> {
   net::io_context & ioc_;

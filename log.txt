@@ -1,0 +1,40 @@
+0: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:27 2023
+1: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:27 2023
+2: "CONNECT www.google.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:29 2023
+3: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:29 2023
+4: "CONNECT firefox.settings.services.mozilla.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:30 2023
+6: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:30 2023
+7: "CONNECT adservice.google.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:30 2023
+8: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:30 2023
+9: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:31 2023
+10: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:31 2023
+11: "CONNECT googleads.g.doubleclick.net:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:31 2023
+12: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:31 2023
+13: "CONNECT mozilla.cloudflare-dns.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:32 2023
+14: "CONNECT mozilla.cloudflare-dns.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:32 2023
+16: "CONNECT www.gstatic.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:33 2023
+17: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:34 2023
+CONNECT id.google.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:34 2023
+18: "CONNECT i.ytimg.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:34 2023
+21: "CONNECT fonts.gstatic.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+20: "CONNECT i.ytimg.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+19: "CONNECT i.ytimg.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+23: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+24: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+22: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+25: "CONNECT play.google.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+27: "CONNECT ssl.gstatic.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+26: "CONNECT play.google.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+28: "CONNECT safebrowsing.googleapis.com:443 HTTP/11" from 174.109.109.181 @ 29: "CONNECT Sun Feb 26 01:51:35 2023
+28: "CONNECT safebrowsing.googl HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+30: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+31: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+32: "CONNECT www.youtube.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:35 2023
+5: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:36 2023
+33: "CONNECT fonts.gstatic.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:36 2023
+34: "CONNECT static.doubleclick.net:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:36 2023
+35: "CONNECT jnn-pa.googleapis.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:36 2023
+37: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:36 2023
+38: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:37 2023
+39: "CONNECT ogs.google.com:443 HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:40 2023
+36: "  HTTP/11" from 174.109.109.181 @ Sun Feb 26 01:51:41 2023
