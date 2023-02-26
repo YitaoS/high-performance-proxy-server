@@ -1,7 +1,7 @@
 ###complie option###
 CC = g++
 DREW_OF_THREE = -Wall -Werror -pedantic 
-CFLAGS = -std=c++11 -MMD $(DREW_OF_THREE) $(MTHREAD_FLAG) $(INCLUDE_DIR)
+CFLAGS = -std=c++17 -MMD $(DREW_OF_THREE) $(MTHREAD_FLAG) $(INCLUDE_DIR)
 
 MTHREAD_FLAG = -pthread -fsanitize=thread
 # INCLUDE_DIR = -I /user/include/boost

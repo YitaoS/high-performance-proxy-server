@@ -27,6 +27,8 @@ namespace net = boost::asio;       // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
 using socket_type = tcp::socket;
 
+
+
 class session : public std::enable_shared_from_this<session> {
   beast::tcp_stream client_;
   beast::tcp_stream server_;
@@ -39,15 +41,26 @@ class session : public std::enable_shared_from_this<session> {
 
   void fail(beast::error_code ec, char const * what) {
     connecting = false;
-    do_close();
     std::cerr << what << ": " << ec.message() << "\n";
+    do_close();
   }
   void do_close() {
     // Send a TCP shutdown
     beast::error_code ec;
+    std::cout << "Closing conection..." << std::endl;
+    // log: ID: Tunnel closed
     client_.socket().shutdown(tcp::socket::shutdown_send, ec);
     server_.socket().shutdown(tcp::socket::shutdown_send, ec);
     // At this point the connection is closed gracefully
+  }
+  void handle_IO(beast::error_code ec, std::size_t bytes_transferred, char const * what) {
+    boost::ignore_unused(bytes_transferred);
+    if (ec) {
+      return fail(ec, what);
+    }
+  }
+  std::string check_state(http::response<http::string_body> res){
+    return "11";
   }
 
  public:
@@ -70,10 +83,7 @@ class session : public std::enable_shared_from_this<session> {
   }
 
   void on_connect_request(boost::system::error_code ec, std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-    if (ec.failed()) {
-      return fail(ec, "on connect request");
-    }
+    handle_IO(ec, bytes_transferred, "on connect request");
     //we receive client request here, then we need to log the request
     std::string client_addr = client_.socket().remote_endpoint().address().to_string();
     lw_.write_log(req_, client_addr);
@@ -123,14 +133,103 @@ class session : public std::enable_shared_from_this<session> {
         res_,
         beast::bind_front_handler(&session::on_connect_response, shared_from_this()));
   }
-  void handle_get_request() {}
-  void handle_post_request() {}
+
+  void handle_get_request() {
+    // Check if there is cache in log
+    std::optional<http::response<http::string_body> > cache_res; // = cache_response(req_)
+    if (cache_res.has_value()){
+      if (check_state(*cache_res) == "valid"){
+        // log: ID: in cache, valid
+        http::async_write(
+              client_,
+              *cache_res,
+              beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
+      }
+      else if (check_state(*cache_res) == "expired"){
+        ;// log: ID: in cache, but expired at EXPIREDTIME
+      }
+      else if (check_state(*cache_res) == "requires validation"){
+        ;// log: ID: in cache, requires validation
+      }
+    }
+    //// ElSE IS NEEDED HERE! /////
+    // else {
+    //   log: ID: not in cache
+    // }
+    http::async_write(
+          server_,
+          req_,
+          beast::bind_front_handler(&session::get_on_write_server, shared_from_this()));
+  }
+
+  void get_on_write_server(beast::error_code ec, std::size_t bytes_transferred) {
+    handle_IO(ec, bytes_transferred, "get on write server");
+    // log: ID: Requesting "REQUEST" from SERVER
+    http::async_read(
+        server_,
+        lead_in_,
+        res_,
+        beast::bind_front_handler(&session::get_on_read_server, shared_from_this()));
+  }
+
+  void get_on_read_server(beast::error_code ec, std::size_t bytes_transferred) {
+    handle_IO(ec, bytes_transferred, "get on read server");
+    // log: ID: Received "RESPONSE" from SERVER
+    if (res_.result() == http::status::ok){
+      // log: ID: not cacheable because REASON
+      // ID: cached, expires at EXPIRES
+      // ID: cached, but requires re-validation
+      // Save cache here
+      // cache_response(req_, res_);
+    }
+    http::async_write(
+        client_,
+        res_,
+        beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
+  }
+
+  void get_on_write_client(beast::error_code ec, std::size_t bytes_transferred) {
+    handle_IO(ec, bytes_transferred, "get on write client");
+    // log: ID: Responding "RESPONSE"
+    // log tunnel closed in do_close()
+    do_close();
+  }
+
+  void handle_post_request() {
+    http::async_write(
+          server_,
+          req_,
+          beast::bind_front_handler(&session::post_on_write_server, shared_from_this()));
+  }
+
+  void post_on_write_server(beast::error_code ec, std::size_t bytes_transferred) {
+    handle_IO(ec, bytes_transferred, "post on write server");
+    // log: ID: Requesting "REQUEST" from SERVER
+    http::async_read(
+        server_,
+        lead_in_,
+        res_,
+        beast::bind_front_handler(&session::post_on_read_server, shared_from_this()));
+  }
+
+  void post_on_read_server(beast::error_code ec, std::size_t bytes_transferred) {
+    handle_IO(ec, bytes_transferred, "post on read server");
+    // log: ID: Received "RESPONSE" from SERVER
+    http::async_write(
+        client_,
+        res_,
+        beast::bind_front_handler(&session::post_on_write_client, shared_from_this()));
+  }
+
+  void post_on_write_client(beast::error_code ec, std::size_t bytes_transferred) {
+    handle_IO(ec, bytes_transferred, "get on write client");
+    // log: ID: Responding "RESPONSE"
+    // log tunnel closed in do_close()
+    do_close();
+  }
 
   void on_connect_response(boost::system::error_code ec, std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-    if (ec) {
-      return fail(ec, "on connect response");
-    }
+    handle_IO(ec, bytes_transferred, "on connect response");
     handle_client_server_IO();
   }
 
@@ -157,10 +256,7 @@ class session : public std::enable_shared_from_this<session> {
   }
 
   void on_read_client(beast::error_code ec, std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-    if (ec) {
-      return fail(ec, "on read client");
-    }
+    handle_IO(ec, bytes_transferred, "on read client");
     std::cout << "read from client: " << req_ << std::endl;
     http::async_write(
         server_,
@@ -169,10 +265,7 @@ class session : public std::enable_shared_from_this<session> {
   }
 
   void on_write_server(beast::error_code ec, std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-    if (ec) {
-      return fail(ec, "on write server");
-    }
+    handle_IO(ec, bytes_transferred, "on write server");
     http::async_read(
         server_,
         lead_in_,
@@ -181,10 +274,7 @@ class session : public std::enable_shared_from_this<session> {
   }
 
   void on_read_server(beast::error_code ec, std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-    if (ec) {
-      return fail(ec, "on read server");
-    }
+    handle_IO(ec, bytes_transferred, "on read server");
     if (!connecting) {  //// CAN SAVE CACHE HERE ////}
       http::async_write(
           client_,
@@ -194,10 +284,7 @@ class session : public std::enable_shared_from_this<session> {
   }
 
   void on_write_client(beast::error_code ec, std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-    if (ec) {
-      return fail(ec, "on write client");
-    }
+    handle_IO(ec, bytes_transferred, "on write client");
     if (connecting) {
       on_connect(ec, server_.socket().remote_endpoint());
     }
