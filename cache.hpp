@@ -5,8 +5,24 @@
 #include <vector>
 
 class CachedResponse {
-  std::vector<uint8_t> body;
+ public:
+  bool must_revalidate{false};
+  int status_code{0};
+  std::string status_message{""};
+  std::string server{""};
+  std::string content_type{""};
+  std::string body{""};
+  std::chrono::steady_clock::time_point fresh_time;
   std::chrono::steady_clock::time_point expiration_time;
+
+ public:
+  bool operator==(const CachedResponse & other) const {
+    return must_revalidate == other.must_revalidate && status_code == other.status_code &&
+           status_message == other.status_message && server == other.server &&
+           content_type == other.content_type && body == other.body &&
+           fresh_time == other.fresh_time && expiration_time == other.expiration_time;
+  }
+  bool operator!=(const CachedResponse & other) const { return !(*this == other); }
 };
 
 /**
@@ -58,5 +74,17 @@ class Cache {
     }
     // Key not found, return default value
     return V();
+  }
+
+  void remove(K key) {
+    // Assume we want to remove the element with key "key_to_remove"
+    auto it = cache.find(key);
+    if (it != cache.end()) {
+      // Erase the corresponding list iterator from the LRU list
+      lru_list.erase(it->second.second);
+
+      // Erase the element from the cache map
+      cache.erase(it);
+    }
   }
 };
