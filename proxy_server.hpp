@@ -95,7 +95,7 @@ class session : public std::enable_shared_from_this<session> {
     handle_IO(ec, bytes_transferred, "on connect request");
     //we receive client request here, then we need to log the request
     std::string client_addr = client_.socket().remote_endpoint().address().to_string();
-    lw_.write_log(req_, client_addr);
+    lw_.log_request_from_client(req_, client_addr);
     std::cout << "Request: " << req_ << std::endl;
     std::string upstream(req_.target());
     std::string host;
