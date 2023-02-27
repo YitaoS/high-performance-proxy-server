@@ -4,8 +4,8 @@
 #include <unordered_map>
 #include <vector>
 
-class CachedResponse {
- public:
+struct CachedResponse {
+  bool no_cache{false};
   bool must_revalidate{false};
   std::string e_tag{""};
   int status_code{0};
@@ -13,18 +13,14 @@ class CachedResponse {
   std::string server{""};
   std::string content_type{""};
   std::string body{""};
-  std::chrono::steady_clock::time_point fresh_time;
   std::chrono::steady_clock::time_point expiration_time;
 
- public:
-  std::chrono::steady_clock::time_point get_expiration_time(){
-    return expiration_time;
-  }
+  std::chrono::steady_clock::time_point get_expiration_time() { return expiration_time; }
   bool operator==(const CachedResponse & other) const {
-    return must_revalidate == other.must_revalidate && status_code == other.status_code &&
-           status_message == other.status_message && server == other.server &&
-           content_type == other.content_type && body == other.body &&
-           fresh_time == other.fresh_time && expiration_time == other.expiration_time;
+    return must_revalidate == other.must_revalidate && e_tag == other.e_tag &&
+           status_code == other.status_code && status_message == other.status_message &&
+           server == other.server && content_type == other.content_type &&
+           body == other.body && expiration_time == other.expiration_time;
   }
   bool operator!=(const CachedResponse & other) const { return !(*this == other); }
 };
