@@ -19,7 +19,6 @@
 #include <utility>
 #include <vector>
 
-pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 #include "cache.hpp"
 #include "log_writer.hpp"
 #include "request_handler.hpp"
@@ -97,17 +96,36 @@ class session : public std::enable_shared_from_this<session> {
     std::string client_addr = client_.socket().remote_endpoint().address().to_string();
     lw_.log_request_from_client(req_, client_addr);
     std::cout << "Request: " << req_ << std::endl;
-    std::string upstream(req_.target());
+
     std::string host;
-    std::string port = "80";  // default port number is 80 for HTTP
-    std::size_t colon_pos = upstream.find(":");
+    std::string port = "80";
+
+    const auto & headers = req_.base();
+    const auto & host_field = headers[boost::beast::http::field::host];
+    // Split the value of the Cache-Control header into individual directives
+
+    std::cout << host_field << std::endl;
+    std::size_t colon_pos = host_field.find(":");
     if (colon_pos != std::string::npos) {
-      port = upstream.substr(colon_pos + 1);
-      host = upstream.substr(0, colon_pos);
+      port = host_field.substr(colon_pos + 1);
+      host = host_field.substr(0, colon_pos);
+      std::cout << "A" << std::endl;
     }
-    auto eps = tcp::resolver(server_.get_executor()).resolve(host, port);
-    server_.async_connect(
-        eps, beast::bind_front_handler(&session::on_connect, shared_from_this()));
+    else {
+      std::cout << "B" << std::endl;
+      host = host_field;
+    }
+
+    std::cout << host << "::::" << port << std::endl;
+    try {
+      auto eps = tcp::resolver(server_.get_executor()).resolve(host, port);
+      server_.async_connect(
+          eps, beast::bind_front_handler(&session::on_connect, shared_from_this()));
+    }
+    catch (std::exception & e) {
+      std::cerr << "fail to connect to " << host << "::::" << port << std::endl;
+      std::cerr << e.what() << std::endl;
+    }
   }
 
   void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type) {
@@ -126,10 +144,10 @@ class session : public std::enable_shared_from_this<session> {
       handle_connect_request();
     }
     else if (req_.method() == http::verb::get) {
-      handle_get_request();
+      //handle_get_request();
     }
     else if (req_.method() == http::verb::post) {
-      handle_post_request();
+      //handle_post_request();
     }
   }
 
@@ -181,7 +199,6 @@ class session : public std::enable_shared_from_this<session> {
       cached_resp.server = "";
     }
     //store fresh time and expiration time
-    const auto & headers = resp.base();
     // Check if the response has a Cache-Control header
     if (headers.find(boost::beast::http::field::cache_control) != headers.end()) {
       // Get the value of the Cache-Control header
@@ -204,33 +221,35 @@ class session : public std::enable_shared_from_this<session> {
 
         // Calculate the expiration time of the response
         cached_resp.fresh_time = std::chrono::steady_clock::now() + max_age;
-        auto it = std::find_if(
-            directives.begin(), directives.end(), [](const std::string & directive) {
-              return directive == "must-revalidate";
-            });
+      }
+      //fint the must-revalidate directive in the Cache-Control header
+      it = std::find_if(
+          directives.begin(), directives.end(), [](const std::string & directive) {
+            return directive == "must-revalidate";
+          });
 
-        if (it != directives.end()) {
-          // The response has the must-revalidate directive
-          cached_resp.must_revalidate = true;
-        }
-        else {
-          cached_resp.must_revalidate = false;
-          auto it = std::find_if(
-              directives.begin(), directives.end(), [](const std::string & directive) {
-                return boost::starts_with(directive, "max-stale=");
-              });
-          if (it != directives.end()) {
-            // Get the value of the max-age directive
-            std::string max_stale_str = it->substr(std::string("max-stale=").size());
-            int max_stale_sec = std::stoi(max_stale_str);
+      if (it != directives.end()) {
+        // The response has the must-revalidate directive
+        cached_resp.must_revalidate = true;
+      }
+      else {
+        cached_resp.must_revalidate = false;
+      }
+      //fint the max-stale directive in the Cache-Control header
+      it = std::find_if(
+          directives.begin(), directives.end(), [](const std::string & directive) {
+            return boost::starts_with(directive, "max-stale=");
+          });
+      if (it != directives.end()) {
+        // Get the value of the max-stale directive
+        std::string max_stale_str = it->substr(std::string("max-stale=").size());
+        int max_stale_sec = std::stoi(max_stale_str);
 
-            // Calculate the maximum age in seconds
-            std::chrono::seconds max_stale(max_stale_sec);
+        // Calculate the maximum stale in seconds
+        std::chrono::seconds max_stale(max_stale_sec);
 
-            // Calculate the expiration time of the response
-            cached_resp.expiration_time = std::chrono::steady_clock::now() + max_stale;
-          }
-        }
+        // Calculate the expiration time of the response
+        cached_resp.expiration_time = std::chrono::steady_clock::now() + max_stale;
       }
     }
     return cached_resp;
@@ -263,7 +282,7 @@ class session : public std::enable_shared_from_this<session> {
         // The response has the must-revalidate directive
         return false;
       }
-      auto it = std::find_if(
+      it = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "no-store";
           });
@@ -272,7 +291,7 @@ class session : public std::enable_shared_from_this<session> {
         // The response has the must-revalidate directive
         return false;
       }
-      auto it = std::find_if(
+      it = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "private";
           });
@@ -304,34 +323,34 @@ class session : public std::enable_shared_from_this<session> {
     }
   }
   void handle_get_request() {
-    // Check if there is cache in log
-    std::string key = get_cache_key(req_);
-    CachedResponse response = http_cache.get(key);
-    if (response != CachedResponse()) {  //cache has reaponse
-      if (cached_response_state(response) == "valid") {
-        // log: ID: in cache, valid
-        http::response<http::string_body> resp;
+    // // Check if there is cache in log
+    // std::string key = get_cache_key(req_);
+    // CachedResponse response = http_cache.get(key);
+    // if (response != CachedResponse()) {  //cache has reaponse
+    //   if (cached_response_state(response) == "valid") {
+    //     // log: ID: in cache, valid
+    //     http::response<http::string_body> resp;
 
-        http::async_write(
-            client_,
-            *cache_res,
-            beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
-      }
-      else if (cached_response_state(response) == "expired") {
-        ;  // log: ID: in cache, but expired at EXPIREDTIME
-      }
-      else if (cached_response_state(response) == "must-revalidate") {
-        ;  // log: ID: in cache, requires validation
-      }
-    }
-    //// ElSE IS NEEDED HERE! /////
-    // else {
-    //   log: ID: not in cache
+    //     http::async_write(
+    //         client_,
+    //         *cache_res,
+    //         beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
+    //   }
+    //   else if (cached_response_state(response) == "expired") {
+    //     ;  // log: ID: in cache, but expired at EXPIREDTIME
+    //   }
+    //   else if (cached_response_state(response) == "must-revalidate") {
+    //     ;  // log: ID: in cache, requires validation
+    //   }
     // }
-    http::async_write(
-        server_,
-        req_,
-        beast::bind_front_handler(&session::get_on_write_server, shared_from_this()));
+    // //// ElSE IS NEEDED HERE! /////
+    // // else {
+    // //   log: ID: not in cache
+    // // }
+    // http::async_write(
+    //     server_,
+    //     req_,
+    //     beast::bind_front_handler(&session::get_on_write_server, shared_from_this()));
   }
 
   void get_on_write_server(beast::error_code ec, std::size_t bytes_transferred) {

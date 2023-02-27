@@ -7,7 +7,7 @@ std::string LogWriter::current_utc_time() {
   return buf;
 }
 
-std::string to_utc_string(const std::chrono::steady_clock::time_point & tp) {
+std::string LogWriter::to_utc_string(const std::chrono::steady_clock::time_point & tp) {
   // Convert steady_clock::time_point to system_clock::time_point
   auto sys_tp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
       tp - std::chrono::steady_clock::now() + std::chrono::system_clock::now());
@@ -19,8 +19,8 @@ std::string to_utc_string(const std::chrono::steady_clock::time_point & tp) {
   std::tm * tm_utc = std::gmtime(&time);
 
   // Format struct tm as ISO 8601 string
-  std::ostringstream oss;
-  oss << std::put_time(tm_utc, "%Y-%m-%dT%H:%M:%S.%fZ");
+  char buf[30];
+  std::strftime(buf, sizeof(buf), "%a %b %d %H:%M:%S %Y", tm_utc);
 
-  return oss.str();
+  return std::string(buf, std::strlen(buf));
 }

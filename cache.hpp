@@ -82,7 +82,7 @@ class Cache {
     auto it = cache.find(key);
     if (it != cache.end()) {
       // Erase the corresponding list iterator from the LRU list
-      lru_list.erase(it->second.second);
+      lru.erase(it->second.second);
 
       // Erase the element from the cache map
       cache.erase(it);

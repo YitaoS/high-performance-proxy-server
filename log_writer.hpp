@@ -47,8 +47,8 @@ class LogWriter {
     logfile << id << ": Requesting \"" << request.method_string() << " "
             << request.target() << " "
             << "HTTP/" << request.version() << "\" from ";
-    const auto & server_field = response.find("Server");
-    if (server_field != response.end()) {
+    const auto & server_field = request.find("Server");
+    if (server_field != request.end()) {
       logfile << server_field->value() << std::endl;
     }
   }
