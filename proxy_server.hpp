@@ -63,9 +63,8 @@ class session : public std::enable_shared_from_this<session> {
       return fail(ec, what);
     }
   }
-  std::string check_state(http::response<http::string_body> res) { return "11"; }
 
- public:
+public:
   // Take ownership of the stream
   session(tcp::socket && socket,
           int id,
@@ -90,7 +89,7 @@ class session : public std::enable_shared_from_this<session> {
         beast::bind_front_handler(&session::on_connect_request, shared_from_this()));
   }
 
- private:
+private:
   void on_connect_request(boost::system::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "on connect request");
     //we receive client request here, then we need to log the request
@@ -145,29 +144,41 @@ class session : public std::enable_shared_from_this<session> {
   }
 
   std::string get_cache_key(const http::request<http::string_body> & req) {
-    std::string cache_key = req.method_string();
+    std::string cache_key = req.method_string().data();
     cache_key.append(req.target().data(), req.target().size());
     return cache_key;
   }
+
+  http::response<http::string_body> parse_cachedResponse(CachedResponse & cached_resp){
+    http::response<http::string_body> res{beast::http::status::ok, 11};
+    res.result(static_cast<beast::http::status>(cached_resp.status_code));
+    res.reason(cached_resp.status_message);
+    res.set(beast::http::field::server, cached_resp.server);
+    res.set(beast::http::field::content_type, cached_resp.content_type);
+    res.body() = cached_resp.body;
+    res.prepare_payload();
+    return res;
+  }
+
   CachedResponse parse_response(const http::response<http::string_body> & resp) {
     CachedResponse cached_resp;
     //store status_code
     cached_resp.status_code = resp.result_int();
     //store the message
-    std::string status_message = std::string(resp.reason());
+    cached_resp.status_message = std::string(resp.reason());
     //store body
     cached_resp.body = resp.body();
     //store e-tag
     const auto & headers = resp.base();
-    auto it = headers.find(boost::beast::http::field::etag);
+    auto it = headers.find(http::field::etag);
     if (it != headers.end()) {
-      cached_resp.e_tag = it->value();
+      cached_resp.e_tag = std::string(it->value());
       // use the e_tag value as needed
     }
     //store content type
     auto content_type = resp.find(http::field::content_type);
     if (content_type != resp.end()) {
-      cached_resp.content_type = content_type->value();
+      cached_resp.content_type = std::string(content_type->value());
     }
     else {
       cached_resp.content_type = "";
@@ -175,13 +186,12 @@ class session : public std::enable_shared_from_this<session> {
     //store server
     auto server = resp.find(http::field::server);
     if (content_type != resp.end()) {
-      cached_resp.server = server->value();
+      cached_resp.server = std::string(server->value());
     }
     else {
       cached_resp.server = "";
     }
     //store fresh time and expiration time
-    const auto & headers = resp.base();
     // Check if the response has a Cache-Control header
     if (headers.find(boost::beast::http::field::cache_control) != headers.end()) {
       // Get the value of the Cache-Control header
@@ -235,12 +245,21 @@ class session : public std::enable_shared_from_this<session> {
     }
     return cached_resp;
   }
+
   void cache_response(const http::request<http::string_body> & req,
                       const http::response<http::string_body> & resp) {
     std::string cache_key = get_cache_key(req);
     CachedResponse cache_value = parse_response(resp);
     http_cache.put(cache_key, cache_value);
   }
+
+  http::response<http::string_body> get_cached_response(const http::request<http::string_body> & req){
+    std::string cache_key = get_cache_key(req);
+    CachedResponse cache_value = http_cache.get(cache_key);
+    http::response<http::string_body> res = parse_cachedResponse(cache_value);
+    return res;
+  }
+
   bool can_be_cached(const http::response<http::string_body> & resp) {
     const auto & headers = resp.base();
     if (resp.chunked() == true) {
@@ -254,30 +273,30 @@ class session : public std::enable_shared_from_this<session> {
       std::vector<std::string> directives;
       boost::split(directives, std::string(cache_control), boost::is_any_of(","));
       // Find the max-age directive in the Cache-Control header
-      auto it = std::find_if(
+      auto it1 = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "no-cache";
           });
 
-      if (it != directives.end()) {
+      if (it1 != directives.end()) {
         // The response has the must-revalidate directive
         return false;
       }
-      auto it = std::find_if(
+      auto it2 = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "no-store";
           });
 
-      if (it != directives.end()) {
+      if (it2 != directives.end()) {
         // The response has the must-revalidate directive
         return false;
       }
-      auto it = std::find_if(
+      auto it3 = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "private";
           });
 
-      if (it != directives.end()) {
+      if (it3 != directives.end()) {
         // The response has the must-revalidate directive
         return false;
       }
@@ -306,22 +325,33 @@ class session : public std::enable_shared_from_this<session> {
   void handle_get_request() {
     // Check if there is cache in log
     std::string key = get_cache_key(req_);
-    CachedResponse response = http_cache.get(key);
-    if (response != CachedResponse()) {  //cache has reaponse
-      if (cached_response_state(response) == "valid") {
+    CachedResponse cached_res = http_cache.get(key);
+    if (cached_res != CachedResponse()) {  //cache has reaponse
+      if (cached_response_state(cached_res) == "valid") {
         // log: ID: in cache, valid
-        http::response<http::string_body> resp;
-
-        http::async_write(
+        http::response<http::string_body> resp = parse_cachedResponse(cached_res);
+        return http::async_write(
             client_,
-            *cache_res,
+            resp,
             beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
       }
-      else if (cached_response_state(response) == "expired") {
-        ;  // log: ID: in cache, but expired at EXPIREDTIME
+      else if (cached_response_state(cached_res) == "expired") {
+        // log: ID: in cache, but expired at EXPIREDTIME
+        http_cache.remove(key);
+        return http::async_write(
+            server_,
+            req_,
+            beast::bind_front_handler(&session::get_on_write_server, shared_from_this()));
       }
-      else if (cached_response_state(response) == "must-revalidate") {
-        ;  // log: ID: in cache, requires validation
+      else if (cached_response_state(cached_res) == "must-revalidate") {
+        // log: ID: in cache, requires validation
+        http::request<http::string_body> request{http::verb::get, "/", 11};
+        request.set(http::field::host, cached_res.server);
+        request.set(http::field::if_none_match, cached_res.e_tag);
+        return http::async_write(
+            server_,
+            request,
+            beast::bind_front_handler(&session::get_on_write_server, shared_from_this()));
       }
     }
     //// ElSE IS NEEDED HERE! /////
@@ -347,12 +377,18 @@ class session : public std::enable_shared_from_this<session> {
   void get_on_read_server(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "get on read server");
     // log: ID: Received "RESPONSE" from SERVER
-    if (res_.result() == http::status::ok) {
+    if (res_.result() == http::status::not_modified){
+      return http::async_write(
+            client_,
+            get_cached_response(req_),
+            beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
+    }
+    else if (res_.result() == http::status::ok) {
       // log: ID: not cacheable because REASON
       // ID: cached, expires at EXPIRES
       // ID: cached, but requires re-validation
       // Save cache here
-      // cache_response(req_, res_);
+      cache_response(req_, res_);
     }
     http::async_write(
         client_,
