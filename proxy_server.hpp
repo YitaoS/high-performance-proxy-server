@@ -19,7 +19,6 @@
 #include <utility>
 #include <vector>
 
-pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 #include "cache.hpp"
 #include "log_writer.hpp"
 #include "request_handler.hpp"
@@ -95,18 +94,37 @@ private:
     //we receive client request here, then we need to log the request
     std::string client_addr = client_.socket().remote_endpoint().address().to_string();
     lw_.log_request_from_client(req_, client_addr);
-    //std::cout << "Request: " << req_ << std::endl;
-    std::string upstream(req_.target());
+    std::cout << "Request: " << req_ << std::endl;
+
     std::string host;
-    std::string port = "80";  // default port number is 80 for HTTP
-    std::size_t colon_pos = upstream.find(":");
+    std::string port = "80";
+
+    const auto & headers = req_.base();
+    const auto & host_field = headers[boost::beast::http::field::host];
+    // Split the value of the Cache-Control header into individual directives
+
+    std::cout << host_field << std::endl;
+    std::size_t colon_pos = host_field.find(":");
     if (colon_pos != std::string::npos) {
-      port = upstream.substr(colon_pos + 1);
-      host = upstream.substr(0, colon_pos);
+      port = std::string(host_field.substr(colon_pos + 1));
+      host = std::string(host_field.substr(0, colon_pos));
+      std::cout << "A" << std::endl;
     }
-    auto eps = tcp::resolver(server_.get_executor()).resolve(host, port);
-    server_.async_connect(
-        eps, beast::bind_front_handler(&session::on_connect, shared_from_this()));
+    else {
+      std::cout << "B" << std::endl;
+      host = std::string(host_field);
+    }
+
+    std::cout << host << "::::" << port << std::endl;
+    try {
+      auto eps = tcp::resolver(server_.get_executor()).resolve(host, port);
+      server_.async_connect(
+          eps, beast::bind_front_handler(&session::on_connect, shared_from_this()));
+    }
+    catch (std::exception & e) {
+      std::cerr << "fail to connect to " << host << "::::" << port << std::endl;
+      std::cerr << e.what() << std::endl;
+    }
   }
 
   void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type) {
@@ -128,8 +146,7 @@ private:
       //handle_get_request();
     }
     else if (req_.method() == http::verb::post) {
-      
-      handle_post_request();
+      //handle_post_request();
     }
   }
 
@@ -215,33 +232,35 @@ private:
 
         // Calculate the expiration time of the response
         cached_resp.fresh_time = std::chrono::steady_clock::now() + max_age;
-        auto it = std::find_if(
-            directives.begin(), directives.end(), [](const std::string & directive) {
-              return directive == "must-revalidate";
-            });
+      }
+      //fint the must-revalidate directive in the Cache-Control header
+      it = std::find_if(
+          directives.begin(), directives.end(), [](const std::string & directive) {
+            return directive == "must-revalidate";
+          });
 
-        if (it != directives.end()) {
-          // The response has the must-revalidate directive
-          cached_resp.must_revalidate = true;
-        }
-        else {
-          cached_resp.must_revalidate = false;
-          auto it = std::find_if(
-              directives.begin(), directives.end(), [](const std::string & directive) {
-                return boost::starts_with(directive, "max-stale=");
-              });
-          if (it != directives.end()) {
-            // Get the value of the max-age directive
-            std::string max_stale_str = it->substr(std::string("max-stale=").size());
-            int max_stale_sec = std::stoi(max_stale_str);
+      if (it != directives.end()) {
+        // The response has the must-revalidate directive
+        cached_resp.must_revalidate = true;
+      }
+      else {
+        cached_resp.must_revalidate = false;
+      }
+      //fint the max-stale directive in the Cache-Control header
+      it = std::find_if(
+          directives.begin(), directives.end(), [](const std::string & directive) {
+            return boost::starts_with(directive, "max-stale=");
+          });
+      if (it != directives.end()) {
+        // Get the value of the max-stale directive
+        std::string max_stale_str = it->substr(std::string("max-stale=").size());
+        int max_stale_sec = std::stoi(max_stale_str);
 
-            // Calculate the maximum age in seconds
-            std::chrono::seconds max_stale(max_stale_sec);
+        // Calculate the maximum stale in seconds
+        std::chrono::seconds max_stale(max_stale_sec);
 
-            // Calculate the expiration time of the response
-            cached_resp.expiration_time = std::chrono::steady_clock::now() + max_stale;
-          }
-        }
+        // Calculate the expiration time of the response
+        cached_resp.expiration_time = std::chrono::steady_clock::now() + max_stale;
       }
     }
     return cached_resp;
@@ -274,30 +293,30 @@ private:
       std::vector<std::string> directives;
       boost::split(directives, std::string(cache_control), boost::is_any_of(","));
       // Find the max-age directive in the Cache-Control header
-      auto it1 = std::find_if(
+      auto it = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "no-cache";
           });
 
-      if (it1 != directives.end()) {
+      if (it != directives.end()) {
         // The response has the must-revalidate directive
         return false;
       }
-      auto it2 = std::find_if(
+      it = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "no-store";
           });
 
-      if (it2 != directives.end()) {
+      if (it != directives.end()) {
         // The response has the must-revalidate directive
         return false;
       }
-      auto it3 = std::find_if(
+      it = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "private";
           });
 
-      if (it3 != directives.end()) {
+      if (it != directives.end()) {
         // The response has the must-revalidate directive
         return false;
       }
