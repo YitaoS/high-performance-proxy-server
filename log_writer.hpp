@@ -7,6 +7,7 @@
 #include <boost/config.hpp>
 
 #include <ctime>
+#include <iomanip>
 #include <fstream>
 #include <iostream>
 #include <mutex>
@@ -47,15 +48,15 @@ class LogWriter {
     logfile << id << ": Requesting \"" << request.method_string() << " "
             << request.target() << " "
             << "HTTP/" << request.version() << "\" from ";
-    const auto & server_field = response.find("Server");
-    if (server_field != response.end()) {
+    const auto & server_field = request.find("Server");
+    if (server_field != request.end()) {
       logfile << server_field->value() << std::endl;
     }
   }
 
   void log_response_from_server(const http::response<http::string_body> & response) {
     std::lock_guard<std::mutex> lock(log_mutex);
-    logfile << id << ": Requesting \""
+    logfile << id << ": Receiving \""
             << "HTTP/" << response.version() << " " << response.result_int() << " "
             << response.reason() << "\" from ";
     const auto & server_field = response.find("Server");

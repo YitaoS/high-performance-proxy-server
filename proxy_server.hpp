@@ -95,7 +95,7 @@ private:
     //we receive client request here, then we need to log the request
     std::string client_addr = client_.socket().remote_endpoint().address().to_string();
     lw_.log_request_from_client(req_, client_addr);
-    std::cout << "Request: " << req_ << std::endl;
+    //std::cout << "Request: " << req_ << std::endl;
     std::string upstream(req_.target());
     std::string host;
     std::string port = "80";  // default port number is 80 for HTTP
@@ -110,11 +110,12 @@ private:
   }
 
   void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type) {
+    std::cout<<"////////////////\n\n\n\n"<<std::endl;
     if (ec) {
       // may need to send back bad response to client
       return fail(ec, "on connect");
     }
-
+    
     /***
 	 * here connection to server has been built
 	*/
@@ -125,9 +126,10 @@ private:
       handle_connect_request();
     }
     else if (req_.method() == http::verb::get) {
-      handle_get_request();
+      //handle_get_request();
     }
     else if (req_.method() == http::verb::post) {
+      
       handle_post_request();
     }
   }
@@ -377,6 +379,7 @@ private:
   void get_on_read_server(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "get on read server");
     // log: ID: Received "RESPONSE" from SERVER
+    lw_.log_response_from_server(res_);
     if (res_.result() == http::status::not_modified){
       return http::async_write(
             client_,
@@ -413,6 +416,7 @@ private:
   void post_on_write_server(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "post on write server");
     // log: ID: Requesting "REQUEST" from SERVER
+    lw_.log_request_to_server(req_, server_.socket().remote_endpoint().address().to_string());
     http::async_read(
         server_,
         lead_in_,
@@ -423,6 +427,7 @@ private:
   void post_on_read_server(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "post on read server");
     // log: ID: Received "RESPONSE" from SERVER
+    lw_.log_response_from_server(res_);
     http::async_write(
         client_,
         res_,
@@ -432,7 +437,9 @@ private:
   void post_on_write_client(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "get on write client");
     // log: ID: Responding "RESPONSE"
+    lw_.log_response_to_client(res_);
     // log tunnel closed in do_close()
+    lw_.log_tunnel_closed();
     do_close();
   }
 
@@ -483,12 +490,12 @@ private:
       server_do_read();
   }
 
-  void on_connect_response(boost::system::error_code ec, std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-    if (ec) {
-      return fail(ec, "on connect response");
-    }
-  }
+  // void on_connect_response(boost::system::error_code ec, std::size_t bytes_transferred) {
+  //   boost::ignore_unused(bytes_transferred);
+  //   if (ec) {
+  //     return fail(ec, "on connect response");
+  //   }
+  // }
 };
 
 class listener : public std::enable_shared_from_this<listener> {
