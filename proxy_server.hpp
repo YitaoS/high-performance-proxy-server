@@ -110,7 +110,6 @@ private:
   }
 
   void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type) {
-    std::cout<<"////////////////\n\n\n\n"<<std::endl;
     if (ec) {
       // may need to send back bad response to client
       return fail(ec, "on connect");
