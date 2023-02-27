@@ -22,13 +22,13 @@ class LogWriter {
  private:
   int id;
   std::ofstream & logfile;
-  std::mutex log_mutex;
+  std::mutex & log_mutex;
   // Returns the current time as a string in UTC with asctime format
   std::string current_utc_time();
   std::string to_utc_string(const std::chrono::steady_clock::time_point & tp);
 
  public:
-  LogWriter(int id, std::ofstream & log) : id(id), logfile(log) {}
+  LogWriter(int id, std::ofstream & log, std::mutex & mutex) : id(id), logfile(log), log_mutex(mutex) {}
 
   template<class Body, class Allocator>
   void log_request_from_client(
@@ -43,26 +43,18 @@ class LogWriter {
   template<class Body, class Allocator>
   void log_request_to_server(
       const http::request<Body, http::basic_fields<Allocator> > & request,
-      std::string server_address) {
+      std::string server_name) {
     std::lock_guard<std::mutex> lock(log_mutex);
     logfile << id << ": Requesting \"" << request.method_string() << " "
             << request.target() << " "
-            << "HTTP/" << request.version() << "\" from ";
-    const auto & server_field = request.find("Server");
-    if (server_field != request.end()) {
-      logfile << server_field->value() << std::endl;
-    }
+            << "HTTP/" << request.version() << "\" from " << server_name << std::endl;
   }
 
-  void log_response_from_server(const http::response<http::string_body> & response) {
+  void log_response_from_server(const http::response<http::string_body> & response, std::string server_name) {
     std::lock_guard<std::mutex> lock(log_mutex);
     logfile << id << ": Receiving \""
             << "HTTP/" << response.version() << " " << response.result_int() << " "
-            << response.reason() << "\" from ";
-    const auto & server_field = response.find("Server");
-    if (server_field != response.end()) {
-      logfile << server_field->value() << std::endl;
-    }
+            << response.reason() << "\" from " << server_name << std::endl;
   }
 
   void log_response_to_client(const http::response<http::string_body> & response) {

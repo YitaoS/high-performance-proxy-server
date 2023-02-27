@@ -18,6 +18,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <utility>
 
 #include "cache.hpp"
 #include "log_writer.hpp"
@@ -39,11 +40,10 @@ class session : public std::enable_shared_from_this<session> {
   http::response<http::string_body> res_;
   LogWriter lw_;
   Cache<std::string, CachedResponse> & http_cache;
-  //tcp::resolver server_resolver_;
-  bool connecting = false;
+  std::string host;
+  std::string port;
 
   void fail(beast::error_code ec, char const * what) {
-    connecting = false;
     std::cerr << what << ": " << ec.message() << "\n";
     do_close();
   }
@@ -62,16 +62,33 @@ class session : public std::enable_shared_from_this<session> {
       return fail(ec, what);
     }
   }
+  std::pair<std::string, std::string> get_server_name(http::request<http::string_body> & request){
+    std::string host;
+    std::string port = "80";
+    const auto & headers = req_.base();
+    const auto & host_field = headers[boost::beast::http::field::host];
+    // Split the value of the Cache-Control header into individual directives
+    std::size_t colon_pos = host_field.find(":");
+    if (colon_pos != std::string::npos) {
+      port = std::string(host_field.substr(colon_pos + 1));
+      host = std::string(host_field.substr(0, colon_pos));
+    }
+    else {
+      host = std::string(host_field);
+    }
+    return std::make_pair(host, port);
+  }
 
 public:
   // Take ownership of the stream
   session(tcp::socket && socket,
           int id,
           std::ofstream & logfile,
-          Cache<std::string, CachedResponse> & cache) :
+          Cache<std::string, CachedResponse> & cache,
+          std::mutex & mutex) :
       client_(std::move(socket)),
       server_(socket.get_executor()),
-      lw_(id, logfile),
+      lw_(id, logfile, mutex),
       http_cache(cache) {}
 
   // Start the asynchronous operation
@@ -94,26 +111,11 @@ private:
     //we receive client request here, then we need to log the request
     std::string client_addr = client_.socket().remote_endpoint().address().to_string();
     lw_.log_request_from_client(req_, client_addr);
-    std::cout << "Request: " << req_ << std::endl;
+    // std::cout << "Request: " << req_ << std::endl;
 
-    std::string host;
-    std::string port = "80";
-
-    const auto & headers = req_.base();
-    const auto & host_field = headers[boost::beast::http::field::host];
-    // Split the value of the Cache-Control header into individual directives
-
-    std::cout << host_field << std::endl;
-    std::size_t colon_pos = host_field.find(":");
-    if (colon_pos != std::string::npos) {
-      port = std::string(host_field.substr(colon_pos + 1));
-      host = std::string(host_field.substr(0, colon_pos));
-      std::cout << "A" << std::endl;
-    }
-    else {
-      std::cout << "B" << std::endl;
-      host = std::string(host_field);
-    }
+    std::pair<std::string, std::string> server_name = get_server_name(req_);
+    host = server_name.first;
+    port = server_name.second;
 
     // std::cout << host << "::::" << port << std::endl;
     try {
@@ -136,7 +138,7 @@ private:
     /***
 	 * here connection to server has been built
 	*/
-    std::cout << "Connected to " << server_.socket().remote_endpoint() << std::endl;
+    // std::cout << "Connected to " << server_.socket().remote_endpoint() << std::endl;
     server_.expires_after(std::chrono::seconds(15));
     if (req_.method() == http::verb::connect) {
       //other method to do
@@ -404,7 +406,7 @@ private:
   void get_on_write_server(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "get on write server");
     // log: ID: Requesting "REQUEST" from SERVER
-    lw_.log_request_to_server(req_, server_.socket().remote_endpoint().address().to_string());
+    lw_.log_request_to_server(req_, host);
     http::async_read(
         server_,
         lead_in_,
@@ -415,7 +417,7 @@ private:
   void get_on_read_server(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "get on read server");
     // log: ID: Received "RESPONSE" from SERVER
-    lw_.log_response_from_server(res_);
+    lw_.log_response_from_server(res_, host);
     if (res_.result() == http::status::not_modified){
       return http::async_write(
             client_,
@@ -453,7 +455,7 @@ private:
   void post_on_write_server(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "post on write server");
     // log: ID: Requesting "REQUEST" from SERVER
-    lw_.log_request_to_server(req_, server_.socket().remote_endpoint().address().to_string());
+    lw_.log_request_to_server(req_, host);
     http::async_read(
         server_,
         lead_in_,
@@ -464,7 +466,7 @@ private:
   void post_on_read_server(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "post on read server");
     // log: ID: Received "RESPONSE" from SERVER
-    lw_.log_response_from_server(res_);
+    lw_.log_response_from_server(res_, host);
     http::async_write(
         client_,
         res_,
@@ -541,7 +543,7 @@ class listener : public std::enable_shared_from_this<listener> {
   std::ofstream & logfile;
   Cache<std::string, CachedResponse> http_cache;
   int num_of_session;
-  //std::shared_ptr<std::string const> doc_root_;
+  std::mutex my_mutex;
 
   void fail(beast::error_code ec, char const * what) {
     std::cerr << what << ": " << ec.message() << "\n";
@@ -558,7 +560,6 @@ class listener : public std::enable_shared_from_this<listener> {
       http_cache(capacity),
       num_of_session(0) {
     beast::error_code ec;
-
     // Open the acceptor
     acceptor_.open(endpoint.protocol(), ec);
     if (ec) {
@@ -606,7 +607,7 @@ class listener : public std::enable_shared_from_this<listener> {
     }
     else {
       // Create the session and run it
-      std::make_shared<session>(std::move(socket), num_of_session++, logfile, http_cache)
+      std::make_shared<session>(std::move(socket), num_of_session++, logfile, http_cache, my_mutex)
           ->run();
     }
     do_accept();
