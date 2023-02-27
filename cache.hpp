@@ -17,6 +17,9 @@ class CachedResponse {
   std::chrono::steady_clock::time_point expiration_time;
 
  public:
+  std::chrono::steady_clock::time_point get_expiration_time(){
+    return expiration_time;
+  }
   bool operator==(const CachedResponse & other) const {
     return must_revalidate == other.must_revalidate && status_code == other.status_code &&
            status_message == other.status_message && server == other.server &&
@@ -40,7 +43,6 @@ class Cache {
 
  public:
   Cache(size_t capacity) : capacity(capacity) {}
-
   void put(K key, V value) {
     std::lock_guard<std::mutex> lock(cache_mutex);
     auto it = cache.find(key);

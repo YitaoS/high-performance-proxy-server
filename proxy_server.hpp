@@ -115,7 +115,7 @@ private:
       host = std::string(host_field);
     }
 
-    std::cout << host << "::::" << port << std::endl;
+    // std::cout << host << "::::" << port << std::endl;
     try {
       auto eps = tcp::resolver(server_.get_executor()).resolve(host, port);
       server_.async_connect(
@@ -143,10 +143,10 @@ private:
       handle_connect_request();
     }
     else if (req_.method() == http::verb::get) {
-      //handle_get_request();
+      handle_get_request();
     }
     else if (req_.method() == http::verb::post) {
-      //handle_post_request();
+      handle_post_request();
     }
   }
 
@@ -270,6 +270,8 @@ private:
                       const http::response<http::string_body> & resp) {
     std::string cache_key = get_cache_key(req);
     CachedResponse cache_value = parse_response(resp);
+    // log: ID: in cache, but expired at EXPIREDTIME
+    lw_.log_cached_with_expire_time(cache_value.get_expiration_time());
     http_cache.put(cache_key, cache_value);
   }
 
@@ -281,8 +283,12 @@ private:
   }
 
   bool can_be_cached(const http::response<http::string_body> & resp) {
+    // log: ID: not cacheable because REASON
+    // ID: cached, expires at EXPIRES
+    // ID: cached, but requires re-validation
     const auto & headers = resp.base();
     if (resp.chunked() == true) {
+      lw_.log_not_cacheable("response.chunked() = true");
       return false;
     }
     // Check if the response has a Cache-Control header
@@ -297,28 +303,37 @@ private:
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "no-cache";
           });
-
       if (it != directives.end()) {
         // The response has the must-revalidate directive
+        lw_.log_not_cacheable("no-cache in the header");
         return false;
       }
       it = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "no-store";
           });
-
       if (it != directives.end()) {
         // The response has the must-revalidate directive
+        lw_.log_not_cacheable("no-store in the header");
         return false;
       }
       it = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "private";
           });
-
       if (it != directives.end()) {
         // The response has the must-revalidate directive
+        lw_.log_not_cacheable("private in the header");
         return false;
+      }
+      it = std::find_if(
+          directives.begin(), directives.end(), [](const std::string & directive) {
+            return directive == "must-revalidate";
+          });
+      if (it != directives.end()) {
+        // The response has the must-revalidate directive
+        lw_.log_cached_with_revalidation();
+        return true;
       }
       return true;
     }
@@ -349,6 +364,7 @@ private:
     if (cached_res != CachedResponse()) {  //cache has reaponse
       if (cached_response_state(cached_res) == "valid") {
         // log: ID: in cache, valid
+        lw_.log_valid();
         http::response<http::string_body> resp = parse_cachedResponse(cached_res);
         return http::async_write(
             client_,
@@ -357,6 +373,7 @@ private:
       }
       else if (cached_response_state(cached_res) == "expired") {
         // log: ID: in cache, but expired at EXPIREDTIME
+        lw_.log_expired(cached_res.get_expiration_time());
         http_cache.remove(key);
         return http::async_write(
             server_,
@@ -365,6 +382,7 @@ private:
       }
       else if (cached_response_state(cached_res) == "must-revalidate") {
         // log: ID: in cache, requires validation
+        lw_.log_require_validation();
         http::request<http::string_body> request{http::verb::get, "/", 11};
         request.set(http::field::host, cached_res.server);
         request.set(http::field::if_none_match, cached_res.e_tag);
@@ -374,10 +392,9 @@ private:
             beast::bind_front_handler(&session::get_on_write_server, shared_from_this()));
       }
     }
-    //// ElSE IS NEEDED HERE! /////
-    // else {
-    //   log: ID: not in cache
-    // }
+    else {
+      lw_.log_not_in_cache();
+    }
     http::async_write(
         server_,
         req_,
@@ -387,6 +404,7 @@ private:
   void get_on_write_server(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "get on write server");
     // log: ID: Requesting "REQUEST" from SERVER
+    lw_.log_request_to_server(req_, server_.socket().remote_endpoint().address().to_string());
     http::async_read(
         server_,
         lead_in_,
@@ -405,11 +423,10 @@ private:
             beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
     }
     else if (res_.result() == http::status::ok) {
-      // log: ID: not cacheable because REASON
-      // ID: cached, expires at EXPIRES
-      // ID: cached, but requires re-validation
       // Save cache here
-      cache_response(req_, res_);
+      if (can_be_cached(res_)){
+        cache_response(req_, res_);
+      }
     }
     http::async_write(
         client_,
@@ -420,7 +437,9 @@ private:
   void get_on_write_client(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "get on write client");
     // log: ID: Responding "RESPONSE"
+    lw_.log_response_to_client(res_);
     // log tunnel closed in do_close()
+    lw_.log_tunnel_closed();
     do_close();
   }
 
