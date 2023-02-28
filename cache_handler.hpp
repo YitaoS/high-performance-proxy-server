@@ -5,7 +5,7 @@
 #include <boost/beast.hpp>
 
 #include "log_writer.hpp"
-
+#include "cache.hpp"
 namespace beast = boost::beast;  // from <boost/beast.hpp>
 namespace http = beast::http;    // from <boost/beast/http.hpp>
 class CacheHandler {

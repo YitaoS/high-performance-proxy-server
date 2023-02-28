@@ -39,21 +39,24 @@ class session : public std::enable_shared_from_this<session> {
   http::request<http::string_body> req_;
   http::response<http::string_body> res_;
   LogWriter lw_;
+  std::mutex & cerr_mutex_;
   CacheHandler cache_handler;
   std::string host;
   std::string port;
   HttpParser hp;
-
  public:
   // Take ownership of the stream
   session(tcp::socket && socket,
           int id,
           std::ofstream & logfile,
           Cache<std::string, CachedResponse> & cache,
-          std::mutex & mutex) :
+          std::mutex & log_mutex,
+          std::mutex & cerr_mutex
+          ) :
       client_(std::move(socket)),
       server_(socket.get_executor()),
-      lw_(id, logfile, mutex),
+      lw_(id, logfile, log_mutex),
+      cerr_mutex_(cerr_mutex),
       cache_handler(cache, lw_) {}
 
   // Start the asynchronous operation
@@ -76,19 +79,16 @@ class session : public std::enable_shared_from_this<session> {
     //we receive client request here, then we need to log the request
     std::string client_addr = client_.socket().remote_endpoint().address().to_string();
     lw_.log_request_from_client(req_, client_addr);
-    // std::cout << "Request: " << req_ << std::endl;
-
     std::pair<std::string, std::string> server_name = hp.get_server_name(req_);
     host = server_name.first;
     port = server_name.second;
-
-    // std::cout << host << "::::" << port << std::endl;
     try {
       auto eps = tcp::resolver(server_.get_executor()).resolve(host, port);
       server_.async_connect(
           eps, beast::bind_front_handler(&session::on_connect, shared_from_this()));
     }
     catch (std::exception & e) {
+      std::lock_guard<std::mutex> lock(cerr_mutex_);
       std::cerr << "fail to connect to " << host << "::::" << port << std::endl;
       std::cerr << e.what() << std::endl;
     }
@@ -103,7 +103,6 @@ class session : public std::enable_shared_from_this<session> {
     /***
 	 * here connection to server has been built
 	*/
-    // std::cout << "Connected to " << server_.socket().remote_endpoint() << std::endl;
     server_.expires_after(std::chrono::seconds(15));
     if (req_.method() == http::verb::connect) {
       //other method to do
@@ -264,10 +263,6 @@ class session : public std::enable_shared_from_this<session> {
     do_close();
   }
 
-  // void on_connect_response(boost::system::error_code ec, std::size_t bytes_transferred) {
-  //   handle_IO(ec, bytes_transferred, "on connect response");
-  //   handle_client_server_IO();
-
   void on_connect_response(boost::system::error_code ec) {
     if (!ec) {
       client_do_read();
@@ -312,13 +307,13 @@ class session : public std::enable_shared_from_this<session> {
   }
 
   void fail(beast::error_code ec, char const * what) {
+    std::lock_guard<std::mutex> lock(cerr_mutex_);
     std::cerr << what << ": " << ec.message() << "\n";
     do_close();
   }
   void do_close() {
     // Send a TCP shutdown
     beast::error_code ec;
-    std::cout << "Closing conection..." << std::endl;
     // log: ID: Tunnel closed
     client_.socket().shutdown(tcp::socket::shutdown_send, ec);
     server_.socket().shutdown(tcp::socket::shutdown_send, ec);

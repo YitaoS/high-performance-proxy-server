@@ -9,7 +9,7 @@ LIBS = -lssl -lcrypto
 
 ###
 all: proxy 
-proxy: proxy_server.cpp log_writer.cpp
+proxy: *.cpp
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
 %.o: %.cpp %.hpp

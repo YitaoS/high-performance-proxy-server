@@ -14,9 +14,11 @@ class listener : public std::enable_shared_from_this<listener> {
   std::ofstream & logfile;
   Cache<std::string, CachedResponse> http_cache;
   int num_of_session;
-  std::mutex my_mutex;
+  std::mutex log_mutex;
+  std::mutex cerr_mutex;
 
   void fail(beast::error_code ec, char const * what) {
+    std::lock_guard<std::mutex> lock(cerr_mutex);
     std::cerr << what << ": " << ec.message() << "\n";
   }
 
@@ -79,7 +81,7 @@ class listener : public std::enable_shared_from_this<listener> {
     else {
       // Create the session and run it
       std::make_shared<session>(
-          std::move(socket), num_of_session++, logfile, http_cache, my_mutex)
+          std::move(socket), num_of_session++, logfile, http_cache, log_mutex, cerr_mutex)
           ->run();
     }
     do_accept();
