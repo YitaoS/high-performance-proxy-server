@@ -39,7 +39,6 @@ class session : public std::enable_shared_from_this<session> {
   http::request<http::string_body> req_;
   http::response<http::string_body> res_;
   LogWriter lw_;
-  std::mutex & cerr_mutex_;
   CacheHandler cache_handler;
   std::string host;
   std::string port;
@@ -50,13 +49,11 @@ class session : public std::enable_shared_from_this<session> {
           int id,
           std::ofstream & logfile,
           Cache<std::string, CachedResponse> & cache,
-          std::mutex & log_mutex,
-          std::mutex & cerr_mutex
+          std::mutex & log_mutex
           ) :
       client_(std::move(socket)),
       server_(socket.get_executor()),
       lw_(id, logfile, log_mutex),
-      cerr_mutex_(cerr_mutex),
       cache_handler(cache, lw_) {}
 
   // Start the asynchronous operation
@@ -88,7 +85,6 @@ class session : public std::enable_shared_from_this<session> {
           eps, beast::bind_front_handler(&session::on_connect, shared_from_this()));
     }
     catch (std::exception & e) {
-      std::lock_guard<std::mutex> lock(cerr_mutex_);
       std::cerr << "fail to connect to " << host << "::::" << port << std::endl;
       std::cerr << e.what() << std::endl;
     }
@@ -307,7 +303,6 @@ class session : public std::enable_shared_from_this<session> {
   }
 
   void fail(beast::error_code ec, char const * what) {
-    std::lock_guard<std::mutex> lock(cerr_mutex_);
     std::cerr << what << ": " << ec.message() << "\n";
     do_close();
   }

@@ -21,7 +21,7 @@ class HttpParser {
   }
 
   std::pair<std::string, std::string> get_server_name(
-      http::request<http::string_body> & request) {
+    http::request<http::string_body> & request) {
     std::string host;
     std::string port = "80";
     const auto & headers = request.base();
