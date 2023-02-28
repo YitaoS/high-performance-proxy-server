@@ -39,8 +39,11 @@ class LogWriter {
       const http::request<Body, http::basic_fields<Allocator> > & request,
       std::string client_address) {
     std::lock_guard<std::mutex> lock(log_mutex);
+    auto http_version = request.version();
+    std::string http_version_string = "HTTP/" + std::to_string(http_version / 10) + "." +
+                                      std::to_string(http_version % 10);
     logfile << id << ": \"" << request.method_string() << " " << request.target() << " "
-            << "HTTP/" << request.version() << "\" from " << client_address << " @ "
+            << "HTTP/" << http_version_string << "\" from " << client_address << " @ "
             << current_utc_time() << std::endl;
   }
 

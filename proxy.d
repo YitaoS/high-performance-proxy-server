@@ -1,1 +1,1 @@
-proxy: cache.cpp cache.hpp
+proxy: cache.hpp

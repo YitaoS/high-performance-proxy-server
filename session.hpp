@@ -88,13 +88,13 @@ class session : public std::enable_shared_from_this<session> {
     }
   }
 
-  void on_write_bad_client(beast::error_code ec, std::size_t bytes_transferred){
+  void on_write_bad_client(beast::error_code ec, std::size_t bytes_transferred) {
     handle_IO(ec, bytes_transferred, "on write bad client");
     // log: ID: Responding "RESPONSE"
     lw_.log_response_to_client(res_);
     // log tunnel closed in do_close()
     lw_.log_tunnel_closed();
-    do_close(); 
+    do_close();
   }
 
   void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type) {
@@ -136,7 +136,7 @@ class session : public std::enable_shared_from_this<session> {
       const http::request<http::string_body> & req) {
     std::string cache_key = hp.get_cache_key(req);
     CachedResponse cache_value = cache_handler.get(cache_key);
-    http::response<http::string_body> res = hp.parse_cachedResponse(cache_value);
+    http::response<http::string_body> res = hp.parse_cached_response(cache_value);
     return res;
   }
 
@@ -148,7 +148,7 @@ class session : public std::enable_shared_from_this<session> {
       if (cache_handler.cached_response_state(cached_res, req_) == "valid") {
         // log: ID: in cache, valid
         lw_.log_valid();
-        http::response<http::string_body> resp = hp.parse_cachedResponse(cached_res);
+        http::response<http::string_body> resp = hp.parse_cached_response(cached_res);
         return http::async_write(
             client_,
             resp,
@@ -215,15 +215,16 @@ class session : public std::enable_shared_from_this<session> {
         cache_handler.cache_response(cache_key, cache_value);
       }
       return http::async_write(
-        client_,
-        res_,
-        beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
+          client_,
+          res_,
+          beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
     }
-    else if (res_.result() > beast::http::status::ok && res_.result() < beast::http::status::multiple_choices){
+    else if (res_.result() > beast::http::status::ok &&
+             res_.result() < beast::http::status::multiple_choices) {
       return http::async_write(
-        client_,
-        res_,
-        beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
+          client_,
+          res_,
+          beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
     }
     else {
       send_bad_response(http::status::bad_gateway, "502 Bad Gateway");
@@ -319,9 +320,7 @@ class session : public std::enable_shared_from_this<session> {
       server_do_read();
   }
 
-  void fail(beast::error_code ec, char const * what) {
-    do_close();
-  }
+  void fail(beast::error_code ec, char const * what) { do_close(); }
   void do_close() {
     // Send a TCP shutdown
     beast::error_code ec;
@@ -336,7 +335,7 @@ class session : public std::enable_shared_from_this<session> {
       return fail(ec, what);
     }
   }
-  void send_bad_response(http::status status, std::string body){
+  void send_bad_response(http::status status, std::string body) {
     res_ = {status, req_.version()};
     res_.set(beast::http::field::server, "My Server");
     res_.set(beast::http::field::content_type, "text/plain");
@@ -345,9 +344,9 @@ class session : public std::enable_shared_from_this<session> {
     // log error message
     lw_.log_error(body);
     http::async_write(
-      client_,
-      res_,
-      beast::bind_front_handler(&session::on_write_bad_client, shared_from_this()));
+        client_,
+        res_,
+        beast::bind_front_handler(&session::on_write_bad_client, shared_from_this()));
   }
 };
 #endif  //SESSION

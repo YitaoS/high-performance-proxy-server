@@ -9,9 +9,10 @@ namespace http = beast::http;    // from <boost/beast/http.hpp>
 
 class HttpParser {
  public:
-  http::response<http::string_body> parse_cachedResponse(CachedResponse & cached_resp);
+  http::response<http::string_body> parse_cached_response(CachedResponse & cached_resp);
 
-  std::pair<std::string, std::string> get_server_name(http::request<http::string_body> & request);
+  std::pair<std::string, std::string> get_server_name(
+      http::request<http::string_body> & request);
 
   std::string get_cache_key(const http::request<http::string_body> & req);
 

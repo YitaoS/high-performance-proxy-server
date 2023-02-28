@@ -19,12 +19,7 @@ struct CachedResponse {
   std::chrono::steady_clock::time_point expiration_time;
 
   std::chrono::steady_clock::time_point get_expiration_time() { return expiration_time; }
-  bool operator==(const CachedResponse & other) const {
-    return must_revalidate == other.must_revalidate && e_tag == other.e_tag &&
-           status_code == other.status_code && status_message == other.status_message &&
-           server == other.server && content_type == other.content_type &&
-           body == other.body && expiration_time == other.expiration_time;
-  }
+  bool operator==(const CachedResponse & other) const;
   bool operator!=(const CachedResponse & other) const { return !(*this == other); }
 };
 
