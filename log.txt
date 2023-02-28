@@ -1,0 +1,84 @@
+0: "GET http://httpbin.org/forms/post HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:05:02 2023
+0: not in cache
+0: Requesting "GET http://httpbin.org/forms/post HTTP/11" from httpbin.org
+0: Receiving "HTTP/11 200 OK" from httpbin.org
+0: Responding "HTTP/11 200 OK"
+0: Tunnel closed
+1: "CONNECT firefox.settings.services.mozilla.com:443 HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:05:42 2023
+2: "CONNECT content-signature-2.cdn.mozilla.net:443 HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:05:42 2023
+3: "CONNECT mozilla.cloudflare-dns.com:443 HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:05:49 2023
+4: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:05:50 2023
+4: not in cache
+4: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
+4: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+4: cached, expires at Tue Feb 28 22:05:50 2023
+4: Responding "HTTP/11 200 OK"
+4: Tunnel closed
+5: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:05:50 2023
+5: not in cache
+5: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from detectportal.firefox.com
+5: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+5: cached, expires at Tue Feb 28 22:05:50 2023
+5: Responding "HTTP/11 200 OK"
+5: Tunnel closed
+6: "POST http://httpbin.org/post HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:06:10 2023
+6: Requesting "POST http://httpbin.org/post HTTP/11" from httpbin.org
+6: Receiving "HTTP/11 200 OK" from httpbin.org
+6: Responding "HTTP/11 200 OK"
+6: Tunnel closed
+7: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:06:50 2023
+7: in cache, requires validation
+7: Requesting "GET / HTTP/11" from detectportal.firefox.com
+7: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+7: cached, expires at Tue Feb 28 22:06:50 2023
+7: Responding "HTTP/11 200 OK"
+7: Tunnel closed
+8: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:06:53 2023
+8: in cache, requires validation
+8: Requesting "GET / HTTP/11" from detectportal.firefox.com
+8: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+8: cached, expires at Tue Feb 28 22:06:53 2023
+8: Responding "HTTP/11 200 OK"
+8: Tunnel closed
+9: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:06:56 2023
+9: in cache, requires validation
+9: Requesting "GET / HTTP/11" from detectportal.firefox.com
+9: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+9: cached, expires at Tue Feb 28 22:06:56 2023
+9: Responding "HTTP/11 200 OK"
+9: Tunnel closed
+10: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:06:59 2023
+10: in cache, requires validation
+10: Requesting "GET / HTTP/11" from detectportal.firefox.com
+10: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+10: cached, expires at Tue Feb 28 22:06:59 2023
+10: Responding "HTTP/11 200 OK"
+10: Tunnel closed
+11: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:07:02 2023
+11: in cache, requires validation
+11: Requesting "GET / HTTP/11" from detectportal.firefox.com
+11: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+11: cached, expires at Tue Feb 28 22:07:02 2023
+11: Responding "HTTP/11 200 OK"
+11: Tunnel closed
+12: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:07:06 2023
+12: in cache, requires validation
+12: Requesting "GET / HTTP/11" from detectportal.firefox.com
+12: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+12: cached, expires at Tue Feb 28 22:07:06 2023
+12: Responding "HTTP/11 200 OK"
+12: Tunnel closed
+13: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:07:09 2023
+13: in cache, requires validation
+13: Requesting "GET / HTTP/11" from detectportal.firefox.com
+13: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+13: cached, expires at Tue Feb 28 22:07:09 2023
+13: Responding "HTTP/11 200 OK"
+13: Tunnel closed
+14: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 198.86.29.10 @ Tue Feb 28 22:07:12 2023
+14: in cache, requires validation
+14: Requesting "GET / HTTP/11" from detectportal.firefox.com
+14: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+14: cached, expires at Tue Feb 28 22:07:12 2023
+14: Responding "HTTP/11 200 OK"
+14: Tunnel closed
