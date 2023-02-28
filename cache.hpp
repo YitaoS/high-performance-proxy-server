@@ -1,3 +1,6 @@
+#ifndef CACHE
+#define CACHE
+
 #include <iostream>
 #include <list>
 #include <mutex>
@@ -39,7 +42,7 @@ class Cache {
 
  public:
   Cache(size_t capacity) : capacity(capacity) {}
-  void put(K key, V value) {
+  void put(const K & key, const V & value) {
     std::lock_guard<std::mutex> lock(cache_mutex);
     auto it = cache.find(key);
     if (it != cache.end()) {
@@ -60,7 +63,7 @@ class Cache {
     }
   }
 
-  V get(K key) {
+  V get(const K & key) {
     std::lock_guard<std::mutex> lock(cache_mutex);
     auto it = cache.find(key);
     if (it != cache.end()) {
@@ -68,7 +71,7 @@ class Cache {
       lru.erase(it->second.second);
       lru.push_front(key);
       it->second.second = lru.begin();
-      V res = it->second.first;
+      V res(it->second.first);
       return res;
     }
     // Key not found, return default value
@@ -86,3 +89,5 @@ class Cache {
     }
   }
 };
+
+#endif  //CACHE

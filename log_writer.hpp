@@ -1,3 +1,6 @@
+#ifndef LOG_WRITER
+#define LOG_WRITER
+
 #include <boost/asio.hpp>
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/strand.hpp>
@@ -7,8 +10,8 @@
 #include <boost/config.hpp>
 
 #include <ctime>
-#include <iomanip>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <mutex>
 #include <string>
@@ -28,7 +31,8 @@ class LogWriter {
   std::string to_utc_string(const std::chrono::steady_clock::time_point & tp);
 
  public:
-  LogWriter(int id, std::ofstream & log, std::mutex & mutex) : id(id), logfile(log), log_mutex(mutex) {}
+  LogWriter(int id, std::ofstream & log, std::mutex & mutex) :
+      id(id), logfile(log), log_mutex(mutex) {}
 
   template<class Body, class Allocator>
   void log_request_from_client(
@@ -50,7 +54,8 @@ class LogWriter {
             << "HTTP/" << request.version() << "\" from " << server_name << std::endl;
   }
 
-  void log_response_from_server(const http::response<http::string_body> & response, std::string server_name) {
+  void log_response_from_server(const http::response<http::string_body> & response,
+                                std::string server_name) {
     std::lock_guard<std::mutex> lock(log_mutex);
     logfile << id << ": Receiving \""
             << "HTTP/" << response.version() << " " << response.result_int() << " "
@@ -116,3 +121,5 @@ class LogWriter {
     logfile << id << ": cached, but requires re-validation" << std::endl;
   }
 };
+
+#endif  //LOG_WRITER

@@ -1,139 +1,46 @@
-0: "CONNECT www.youtube.com:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:14:46 2023
-1: "POST http://ocsp.pki.goog/gts1c3 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:14:46 2023
-1: Requesting "POST http://ocsp.pki.goog/gts1c3 HTTP/11" from ocsp.pki.goog
-1: Receiving "HTTP/11 200 OK" from ocsp.pki.goog
-1: Responding "HTTP/11 200 OK"
-1: Tunnel closed
-2: "CONNECT mozilla.cloudflare-dns.com:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:15:06 2023
-3: "CONNECT play.google.com:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:16:01 2023
-5: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:18:01 2023
-4: "CONNECT firefox.settings.services.mozilla.com:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:18:01 2023
-6: "CONNECT contile-images.services.mozilla.com:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:18:01 2023
-7: "CONNECT img-getpocket.cdn.mozilla.net:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:18:01 2023
-8: "POST http://r3.o.lencr.org/ HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:18:01 2023
-8: Requesting "POST http://r3.o.lencr.org/ HTTP/11" from r3.o.lencr.org
-8: Receiving "HTTP/11 200 OK" from r3.o.lencr.org
-8: Responding "HTTP/11 200 OK"
-8: Tunnel closed
-9: "GET http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:18:02 2023
-9: not in cache
-9: Requesting "GET http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx HTTP/11" from www.httpwatch.com
-9: Receiving "HTTP/11 200 OK" from www.httpwatch.com
-9: not cacheable because response.chunked() = true
-9: Responding "HTTP/11 200 OK"
-9: Tunnel closed
-10: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:18:06 2023
-11: "CONNECT ade.googlesyndication.com:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:18:10 2023
-12: "CONNECT rr2---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:18:10 2023
-13: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:22:35 2023
-14: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:22:35 2023
-13: not in cache
-14: not in cache
-13: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
-14: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from detectportal.firefox.com
-14: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-14: cached, but requires re-validation
-14: cached, expires at Mon Feb 27 23:22:35 2023
-13: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-14: Responding "HTTP/11 200 OK"
-14: Tunnel closed
-13: cached, but requires re-validation
-13: cached, expires at Mon Feb 27 23:22:35 2023
-13: Responding "HTTP/11 200 OK"
-13: Tunnel closed
-15: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:22:35 2023
-15: in cache, requires validation
-15: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from detectportal.firefox.com
-15: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-15: cached, but requires re-validation
-15: cached, expires at Mon Feb 27 23:22:40 2023
-15: Responding "HTTP/11 200 OK"
-15: Tunnel closed
-16: "CONNECT mozilla.cloudflare-dns.com:443 HTTP/11" from 10.194.211.242 @ Mon Feb 27 23:24:12 2023
-17: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from 10.194.211.242 @ Mon Feb 27 23:24:12 2023
-18: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 10.194.211.242 @ Mon Feb 27 23:24:12 2023
-17: in cache, requires validation
-18: in cache, requires validation
-17: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from detectportal.firefox.com
-17: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-17: cached, but requires re-validation
-17: cached, expires at Mon Feb 27 23:24:12 2023
-17: Responding "HTTP/11 200 OK"
-17: Tunnel closed
-19: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:25:08 2023
-20: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:25:08 2023
-20: in cache, requires validation
-20: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
-19: in cache, requires validation
-19: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from detectportal.firefox.com
-20: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-20: cached, but requires re-validation
-20: cached, expires at Mon Feb 27 23:25:08 2023
-20: Responding "HTTP/11 200 OK"
-20: Tunnel closed
-19: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-19: cached, but requires re-validation
-19: cached, expires at Mon Feb 27 23:25:08 2023
-19: Responding "HTTP/11 200 OK"
-19: Tunnel closed
-21: "CONNECT mozilla.cloudflare-dns.com:443 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:25:09 2023
-22: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:25:14 2023
-22: in cache, requires validation
-22: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
-22: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-22: cached, but requires re-validation
-22: cached, expires at Mon Feb 27 23:25:14 2023
+0: "CONNECT mozilla.cloudflare-dns.com:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:28:23 2023
+1: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:32:06 2023
+2: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:32:06 2023
+3: "GET http://www.artsci.utoronto.ca/futurestudents HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:33:14 2023
+3: not in cache
+3: Requesting "GET http://www.artsci.utoronto.ca/futurestudents HTTP/11" from www.artsci.utoronto.ca
+3: Receiving "HTTP/11 301 Moved Permanently" from www.artsci.utoronto.ca
+3: Responding "HTTP/11 301 Moved Permanently"
+3: Tunnel closed
+4: "CONNECT contile.services.mozilla.com:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:41:00 2023
+5: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:41:58 2023
+6: "GET http://www.artsci.utoronto.ca/futurestudents HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:43:08 2023
+6: not in cache
+6: Requesting "GET http://www.artsci.utoronto.ca/futurestudents HTTP/11" from www.artsci.utoronto.ca
+6: Receiving "HTTP/11 301 Moved Permanently" from www.artsci.utoronto.ca
+6: Responding "HTTP/11 301 Moved Permanently"
+6: Tunnel closed
+7: "GET http://www.artsci.utoronto.ca/futurestudents HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:43:39 2023
+7: not in cache
+7: Requesting "GET http://www.artsci.utoronto.ca/futurestudents HTTP/11" from www.artsci.utoronto.ca
+7: Receiving "HTTP/11 301 Moved Permanently" from www.artsci.utoronto.ca
+7: Responding "HTTP/11 301 Moved Permanently"
+7: Tunnel closed
+8: "CONNECT firefox.settings.services.mozilla.com:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:07 2023
+9: "CONNECT contile-images.services.mozilla.com:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:07 2023
+10: "CONNECT img-getpocket.cdn.mozilla.net:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:07 2023
+11: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:07 2023
+13: "CONNECT www.artsci.utoronto.ca:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:26 2023
+16: "CONNECT www.google.com:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:29 2023
+20: "CONNECT www.googletagmanager.com:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:29 2023
+21: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:29 2023
+22: "POST http://ocsp.pki.goog/gts1c3 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:29 2023
+22: Requesting "POST http://ocsp.pki.goog/gts1c3 HTTP/11" from ocsp.pki.goog
+22: Receiving "HTTP/11 200 OK" from ocsp.pki.goog
 22: Responding "HTTP/11 200 OK"
 22: Tunnel closed
-18: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
-18: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-18: Responding "HTTP/11 200 OK"
-18: Tunnel closed
-23: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:26:00 2023
-23: in cache, requires validation
-23: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
-23: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-23: cached, but requires re-validation
-23: cached, expires at Mon Feb 27 23:26:00 2023
-23: Responding "HTTP/11 200 OK"
-23: Tunnel closed
-24: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:26:03 2023
-24: in cache, requires validation
-24: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
-24: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-24: cached, but requires re-validation
-24: cached, expires at Mon Feb 27 23:26:03 2023
-24: Responding "HTTP/11 200 OK"
-24: Tunnel closed
-26: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:31:25 2023
-25: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:31:25 2023
-26: in cache, requires validation
-25: in cache, requires validation
-26: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from detectportal.firefox.com
-26: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-26: cached, but requires re-validation
-26: cached, expires at Mon Feb 27 23:31:25 2023
-26: Responding "HTTP/11 200 OK"
-26: Tunnel closed
-25: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
-25: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-25: cached, but requires re-validation
-25: cached, expires at Mon Feb 27 23:31:25 2023
-25: Responding "HTTP/11 200 OK"
-25: Tunnel closed
-27: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:31:28 2023
-27: in cache, requires validation
-27: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
-27: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-27: cached, but requires re-validation
-27: cached, expires at Mon Feb 27 23:31:28 2023
-27: Responding "HTTP/11 200 OK"
-27: Tunnel closed
-28: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 198.86.29.10 @ Mon Feb 27 23:31:31 2023
-28: in cache, requires validation
-28: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
-28: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
-28: cached, but requires re-validation
-28: cached, expires at Mon Feb 27 23:31:31 2023
-28: Responding "HTTP/11 200 OK"
-28: Tunnel closed
+24: "CONNECT www.google-analytics.com:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:29 2023
+26: "CONNECT stats.g.doubleclick.net:443 HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:30 2023
+12: "  HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:31 2023
+23: "  HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:34 2023
+17: "  HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:34 2023
+19: "  HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:34 2023
+15: "  HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:34 2023
+18: "  HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:34 2023
+14: "  HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:34 2023
+25: "  HTTP/11" from 24.163.80.61 @ Tue Feb 28 04:45:35 2023
