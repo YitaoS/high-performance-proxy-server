@@ -79,14 +79,6 @@ void session::handle_connect_request() {
       beast::bind_front_handler(&session::on_connect_response, shared_from_this()));
 }
 
-http::response<http::string_body> session::get_cached_response(
-    const http::request<http::string_body> & req) {
-  std::string cache_key = hp.get_cache_key(req);
-  CachedResponse cache_value = cache_handler.get(cache_key);
-  http::response<http::string_body> res = hp.parse_cached_response(cache_value);
-  return res;
-}
-
 void session::handle_get_request() {
   // Check if there is cache in log
   std::string key = hp.get_cache_key(req_);
@@ -147,10 +139,13 @@ void session::get_on_read_server(beast::error_code ec, std::size_t bytes_transfe
   check_error(ec, bytes_transferred, "get on read server");
   // log: ID: Received "RESPONSE" from SERVER
   lw_.log_response_from_server(res_, host);
+  std::string cached_key = hp.get_cache_key(req_);
+  CachedResponse cr = cache_handler.get_cached_response(cached_key);
+  res_ = hp.parse_cached_response(cr);
   if (res_.result() == http::status::not_modified) {
     return http::async_write(
         client_,
-        get_cached_response(req_),
+        res_,
         beast::bind_front_handler(&session::get_on_write_client, shared_from_this()));
   }
   else if (res_.result() == http::status::ok) {

@@ -67,9 +67,6 @@ class session : public std::enable_shared_from_this<session> {
 
   void handle_connect_request();
 
-  http::response<http::string_body> get_cached_response(
-      const http::request<http::string_body> & req);
-
   void handle_get_request();
 
   void get_on_write_server(beast::error_code ec, std::size_t bytes_transferred);
@@ -93,6 +90,7 @@ class session : public std::enable_shared_from_this<session> {
   void client_on_read(beast::error_code ec, std::size_t bytes_transferred);
 
   void client_on_written(beast::error_code ec, std::size_t bytes_transferred);
+
   void server_do_read();
 
   void server_on_read(beast::error_code ec, std::size_t bytes_transferred);

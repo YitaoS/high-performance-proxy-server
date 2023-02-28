@@ -3,6 +3,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/beast.hpp>
+
 #include "cache.hpp"
 #include "log_writer.hpp"
 
@@ -15,7 +16,7 @@ class CacheHandler {
  public:
   explicit CacheHandler(Cache<std::string, CachedResponse> & cache, LogWriter & lw) :
       http_cache(cache), lw_(lw) {}
-      
+
   void cache_response(std::string cache_key, CachedResponse cache_value);
 
   CachedResponse get(std::string key);
@@ -26,6 +27,8 @@ class CacheHandler {
 
   std::string cached_response_state(const CachedResponse & cr,
                                     const http::request<http::string_body> & req);
+
+  CachedResponse CacheHandler::get_cached_response(std::string cache_key);
 };
 
 #endif  // CACHE_HANDLER
