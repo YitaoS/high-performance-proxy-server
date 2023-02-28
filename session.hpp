@@ -124,6 +124,16 @@ class session : public std::enable_shared_from_this<session> {
     else if (req_.method() == http::verb::post) {
       handle_post_request();
     }
+    else {
+      res_ = {beast::http::status::bad_request, req_.version()};
+      res_.set(beast::http::field::server, "My Server");
+      res_.set(beast::http::field::content_type, "text/plain");
+      res_.body() = "Bad Request";
+      http::async_write(
+        client_,
+        res_,
+        beast::bind_front_handler(&session::on_write_bad_client, shared_from_this()));
+    }
   }
 
   void handle_connect_request() {
