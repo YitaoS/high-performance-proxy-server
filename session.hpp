@@ -76,7 +76,7 @@ class session : public std::enable_shared_from_this<session> {
     //we receive client request here, then we need to log the request
     std::string client_addr = client_.socket().remote_endpoint().address().to_string();
     lw_.log_request_from_client(req_, client_addr);
-    // std::cout << "Request: " << req_ << std::endl;
+    std::cout << "Request: " << req_ << std::endl;
 
     std::pair<std::string, std::string> server_name = hp.get_server_name(req_);
     host = server_name.first;

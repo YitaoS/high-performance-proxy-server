@@ -71,8 +71,7 @@ class Cache {
       lru.erase(it->second.second);
       lru.push_front(key);
       it->second.second = lru.begin();
-      V res(it->second.first);
-      return res;
+      return it->second.first;
     }
     // Key not found, return default value
     return V();
