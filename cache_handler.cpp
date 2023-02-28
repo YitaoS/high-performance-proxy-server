@@ -31,15 +31,6 @@ bool CacheHandler::can_be_cached(const http::response<http::string_body> & resp)
       // Find the max-age directive in the Cache-Control header
       auto it = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
-            return directive == "no-cache";
-          });
-      if (it != directives.end()) {
-        // The response has the must-revalidate directive
-        lw_.log_not_cacheable("no-cache in the header");
-        return false;
-      }
-      it = std::find_if(
-          directives.begin(), directives.end(), [](const std::string & directive) {
             return directive == "no-store";
           });
       if (it != directives.end()) {
@@ -58,19 +49,36 @@ bool CacheHandler::can_be_cached(const http::response<http::string_body> & resp)
       }
       it = std::find_if(
           directives.begin(), directives.end(), [](const std::string & directive) {
-            return directive == "must-revalidate";
+            return directive == "no-cache";
           });
       if (it != directives.end()) {
         // The response has the must-revalidate directive
         lw_.log_cached_with_revalidation();
         return true;
       }
+      std::chrono::steady_clock::time_point expiration_time;
+      it = std::find_if(
+          directives.begin(), directives.end(), [](const std::string & directive) {
+            return boost::starts_with(directive, "max-age=");
+          });
+      if (it != directives.end()) {
+        // Get the value of the max-age directive
+        std::string max_age_str = it->substr(std::string("max-age=").size());
+        int max_age_sec = std::stoi(max_age_str);
+
+        // Calculate the maximum age in seconds
+        std::chrono::seconds max_age(max_age_sec);
+
+        // Calculate the expiration time of the response
+        expiration_time = std::chrono::steady_clock::now() + max_age;
+      }
+      lw_.log_cached_with_expire_time(expiration_time);
       return true;
     }
     else {
       return false;
     }
-}
+  }
 
 std::string CacheHandler::cached_response_state(const CachedResponse & cr,
                                     const http::request<http::string_body> & req) {

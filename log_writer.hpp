@@ -86,7 +86,7 @@ class LogWriter {
 
   void log_error(std::string error) {
     std::lock_guard<std::mutex> lock(log_mutex);
-    logfile << id << ": WARNING " << error << std::endl;
+    logfile << id << ": ERROR " << error << std::endl;
   }
 
   //method while handling get req from client

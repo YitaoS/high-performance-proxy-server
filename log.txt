@@ -1,0 +1,399 @@
+0: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:35 2023
+0: not in cache
+0: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
+0: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+0: cached, expires at Tue Feb 28 19:44:35 2023
+0: Responding "HTTP/11 200 OK"
+0: Tunnel closed
+1: "CONNECT www.youtube.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:35 2023
+2: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:35 2023
+3: "CONNECT mozilla.cloudflare-dns.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:35 2023
+2: not in cache
+2: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from detectportal.firefox.com
+2: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+2: cached, expires at Tue Feb 28 19:44:35 2023
+2: Responding "HTTP/11 200 OK"
+2: Tunnel closed
+6: "CONNECT rr3---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:36 2023
+7: "CONNECT rr3---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:36 2023
+11: "CONNECT rr4---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:36 2023
+12: "CONNECT rr4---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:36 2023
+13: "CONNECT rr4---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:36 2023
+9: "CONNECT rr4---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:36 2023
+8: "CONNECT rr4---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:36 2023
+10: "CONNECT rr4---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:36 2023
+5: "CONNECT tpc.googlesyndication.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:36 2023
+15: "CONNECT googleads.g.doubleclick.net:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:37 2023
+17: "CONNECT rr2---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:37 2023
+16: "CONNECT rr2---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:37 2023
+14: "CONNECT pagead2.googlesyndication.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:37 2023
+18: "CONNECT i.ytimg.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:39 2023
+20: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:40 2023
+21: "CONNECT i1.ytimg.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:40 2023
+23: "CONNECT rr2---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:41 2023
+4: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:41 2023
+4: ERROR Bad Request
+4: Responding "HTTP/11 400 Bad Request"
+4: Tunnel closed
+24: "CONNECT us0.forgeofempires.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:41 2023
+26: "CONNECT lh3.googleusercontent.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:43 2023
+27: "CONNECT foeus.innogamescdn.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:43 2023
+29: "CONNECT firefox.settings.services.mozilla.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:43 2023
+32: "CONNECT fonts.googleapis.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:43 2023
+31: "CONNECT incoming.telemetry.mozilla.org:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:43 2023
+33: "CONNECT safebrowsing.googleapis.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:43 2023
+34: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:43 2023
+34: in cache, requires validation
+34: Requesting "GET / HTTP/11" from detectportal.firefox.com
+34: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+34: cached, expires at Tue Feb 28 19:44:43 2023
+34: Responding "HTTP/11 200 OK"
+34: Tunnel closed
+19: "CONNECT fonts.gstatic.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:43 2023
+22: "CONNECT rr2---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:44 2023
+35: "CONNECT accounts.google.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:45 2023
+38: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:46 2023
+38: in cache, requires validation
+38: Requesting "GET / HTTP/11" from detectportal.firefox.com
+38: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+38: cached, expires at Tue Feb 28 19:44:46 2023
+38: Responding "HTTP/11 200 OK"
+38: Tunnel closed
+30: "CONNECT foeus.innogamescdn.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:47 2023
+25: "CONNECT yt3.ggpht.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:47 2023
+28: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:48 2023
+28: ERROR Bad Request
+28: Responding "HTTP/11 400 Bad Request"
+28: Tunnel closed
+39: "CONNECT ade.googlesyndication.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:49 2023
+40: "CONNECT rr3---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:49 2023
+41: "CONNECT lh4.googleusercontent.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:49 2023
+42: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:49 2023
+42: in cache, requires validation
+42: Requesting "GET / HTTP/11" from detectportal.firefox.com
+42: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+42: cached, expires at Tue Feb 28 19:44:50 2023
+42: Responding "HTTP/11 200 OK"
+42: Tunnel closed
+43: "CONNECT rr3---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:50 2023
+36: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:51 2023
+36: ERROR Bad Request
+36: Responding "HTTP/11 400 Bad Request"
+36: Tunnel closed
+37: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:51 2023
+37: ERROR Bad Request
+37: Responding "HTTP/11 400 Bad Request"
+37: Tunnel closed
+45: "CONNECT rr3---sn-hjoj-gq0l.googlevideo.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:52 2023
+48: "CONNECT static.doubleclick.net:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:52 2023
+49: "CONNECT jnn-pa.googleapis.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:52 2023
+51: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:53 2023
+51: in cache, requires validation
+51: Requesting "GET / HTTP/11" from detectportal.firefox.com
+51: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+51: cached, expires at Tue Feb 28 19:44:53 2023
+51: Responding "HTTP/11 200 OK"
+51: Tunnel closed
+53: "CONNECT www.google.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:54 2023
+55: "CONNECT ade.googlesyndication.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:55 2023
+54: "CONNECT ad.doubleclick.net:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:55 2023
+52: "CONNECT yt3.ggpht.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:55 2023
+56: "CONNECT youtube.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:55 2023
+57: "CONNECT www.expedia.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:56 2023
+58: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:56 2023
+58: in cache, requires validation
+58: Requesting "GET / HTTP/11" from detectportal.firefox.com
+58: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+58: cached, expires at Tue Feb 28 19:44:56 2023
+58: Responding "HTTP/11 200 OK"
+58: Tunnel closed
+47: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:57 2023
+47: ERROR Bad Request
+44: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:57 2023
+46: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:57 2023
+44: ERROR Bad Request
+47: Responding "HTTP/11 400 Bad Request"
+47: Tunnel closed
+46: ERROR Bad Request
+44: Responding "HTTP/11 400 Bad Request"
+44: Tunnel closed
+46: Responding "HTTP/11 400 Bad Request"
+46: Tunnel closed
+59: "CONNECT yt3.ggpht.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:57 2023
+61: "CONNECT yt3.googleusercontent.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:57 2023
+50: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:58 2023
+50: ERROR Bad Request
+50: Responding "HTTP/11 400 Bad Request"
+50: Tunnel closed
+63: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:44:59 2023
+63: in cache, requires validation
+63: Requesting "GET / HTTP/11" from detectportal.firefox.com
+63: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+63: cached, expires at Tue Feb 28 19:44:59 2023
+63: Responding "HTTP/11 200 OK"
+63: Tunnel closed
+64: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:02 2023
+64: in cache, requires validation
+64: Requesting "GET / HTTP/11" from detectportal.firefox.com
+64: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+64: cached, expires at Tue Feb 28 19:45:02 2023
+64: Responding "HTTP/11 200 OK"
+64: Tunnel closed
+60: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:03 2023
+62: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:03 2023
+60: ERROR Bad Request
+60: Responding "HTTP/11 400 Bad Request"
+60: Tunnel closed
+62: ERROR Bad Request
+62: Responding "HTTP/11 400 Bad Request"
+62: Tunnel closed
+65: "CONNECT www.googleadservices.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:05 2023
+66: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:05 2023
+66: in cache, requires validation
+66: Requesting "GET / HTTP/11" from detectportal.firefox.com
+66: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+66: cached, expires at Tue Feb 28 19:45:05 2023
+66: Responding "HTTP/11 200 OK"
+66: Tunnel closed
+67: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:08 2023
+67: in cache, requires validation
+67: Requesting "GET / HTTP/11" from detectportal.firefox.com
+67: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+67: cached, expires at Tue Feb 28 19:45:08 2023
+67: Responding "HTTP/11 200 OK"
+67: Tunnel closed
+68: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:12 2023
+68: in cache, requires validation
+68: Requesting "GET / HTTP/11" from detectportal.firefox.com
+68: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+68: cached, expires at Tue Feb 28 19:45:12 2023
+68: Responding "HTTP/11 200 OK"
+68: Tunnel closed
+69: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:15 2023
+69: in cache, requires validation
+69: Requesting "GET / HTTP/11" from detectportal.firefox.com
+69: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+69: cached, expires at Tue Feb 28 19:45:15 2023
+69: Responding "HTTP/11 200 OK"
+69: Tunnel closed
+70: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:18 2023
+70: in cache, requires validation
+70: Requesting "GET / HTTP/11" from detectportal.firefox.com
+70: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+70: cached, expires at Tue Feb 28 19:45:18 2023
+70: Responding "HTTP/11 200 OK"
+70: Tunnel closed
+71: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:21 2023
+71: in cache, requires validation
+71: Requesting "GET / HTTP/11" from detectportal.firefox.com
+71: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+71: cached, expires at Tue Feb 28 19:45:21 2023
+71: Responding "HTTP/11 200 OK"
+71: Tunnel closed
+73: "CONNECT play.google.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:23 2023
+72: "CONNECT play.google.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:23 2023
+74: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:24 2023
+74: in cache, requires validation
+74: Requesting "GET / HTTP/11" from detectportal.firefox.com
+74: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+74: cached, expires at Tue Feb 28 19:45:24 2023
+74: Responding "HTTP/11 200 OK"
+74: Tunnel closed
+75: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:27 2023
+75: in cache, requires validation
+75: Requesting "GET / HTTP/11" from detectportal.firefox.com
+75: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+75: cached, expires at Tue Feb 28 19:45:27 2023
+75: Responding "HTTP/11 200 OK"
+75: Tunnel closed
+76: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:30 2023
+76: in cache, requires validation
+76: Requesting "GET / HTTP/11" from detectportal.firefox.com
+76: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+76: cached, expires at Tue Feb 28 19:45:30 2023
+76: Responding "HTTP/11 200 OK"
+76: Tunnel closed
+77: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:33 2023
+77: in cache, requires validation
+77: Requesting "GET / HTTP/11" from detectportal.firefox.com
+77: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+77: cached, expires at Tue Feb 28 19:45:33 2023
+77: Responding "HTTP/11 200 OK"
+77: Tunnel closed
+79: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:36 2023
+79: in cache, requires validation
+79: Requesting "GET / HTTP/11" from detectportal.firefox.com
+79: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+79: cached, expires at Tue Feb 28 19:45:37 2023
+79: Responding "HTTP/11 200 OK"
+79: Tunnel closed
+80: "CONNECT bat.bing.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:38 2023
+81: "CONNECT a.travel-assets.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:38 2023
+82: "CONNECT www.google-analytics.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+83: "CONNECT c.travel-assets.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+87: "CONNECT c.travel-assets.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+84: "CONNECT c.travel-assets.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+88: "CONNECT c.travel-assets.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+85: "CONNECT c.travel-assets.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+86: "CONNECT c.travel-assets.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+89: "CONNECT c.travel-assets.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+78: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+90: "CONNECT www.uciservice.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+78: ERROR Bad Request
+78: Responding "HTTP/11 400 Bad Request"
+78: Tunnel closed
+91: "CONNECT www.uciservice.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:39 2023
+92: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:40 2023
+92: in cache, requires validation
+92: Requesting "GET / HTTP/11" from detectportal.firefox.com
+92: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+92: cached, expires at Tue Feb 28 19:45:40 2023
+92: Responding "HTTP/11 200 OK"
+92: Tunnel closed
+94: "CONNECT dpm.demdex.net:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:40 2023
+93: "CONNECT cdn.tagcommander.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:40 2023
+95: "CONNECT b.travel-assets.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:40 2023
+97: "CONNECT vacadapter.vap.expedia.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+99: "CONNECT www.trvl-px.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+100: "CONNECT www.googletagmanager.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+101: "CONNECT www.tamgrt.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+103: "CONNECT www.uqd.io:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+102: "CONNECT pixel.mtrcs.samba.tv:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+104: "CONNECT vap.expedia.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+98: "CONNECT www.trvl-px.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+106: "CONNECT oms.expedia.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+107: "CONNECT safebrowsing.googleapis.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:41 2023
+105: "CONNECT vac.vap.expedia.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+108: "CONNECT vap.expedia.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+109: "CONNECT 9224405.fls.doubleclick.net:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+110: "CONNECT connect.facebook.net:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+111: "CONNECT securepubads.g.doubleclick.net:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+112: "CONNECT tr.snapchat.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+113: "CONNECT insight.adsrvr.org:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+114: "CONNECT adservice.google.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+115: "CONNECT adservice.google.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+117: "POST http://ocsp.digicert.com/ HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+116: "CONNECT securepubads.g.doubleclick.net:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:42 2023
+117: Requesting "POST http://ocsp.digicert.com/ HTTP/11" from ocsp.digicert.com
+117: Receiving "HTTP/11 200 OK" from ocsp.digicert.com
+117: Responding "HTTP/11 200 OK"
+117: Tunnel closed
+120: "CONNECT stats.g.doubleclick.net:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:43 2023
+121: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:43 2023
+122: "CONNECT safebrowsing.googleapis.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:43 2023
+121: in cache, requires validation
+121: Requesting "GET / HTTP/11" from detectportal.firefox.com
+121: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+121: cached, expires at Tue Feb 28 19:45:43 2023
+121: Responding "HTTP/11 200 OK"
+121: Tunnel closed
+123: "CONNECT ib.adnxs.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:43 2023
+124: "CONNECT pixel.tapad.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:43 2023
+125: "CONNECT 08ac7223fc784f22deceb422122525b9.safeframe.googlesyndication.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:43 2023
+126: "CONNECT www.facebook.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:43 2023
+127: "CONNECT match.adsrvr.org:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:44 2023
+118: "CONNECT vac.vap.expedia.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:44 2023
+96: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:45 2023
+96: ERROR Bad Request
+96: Responding "HTTP/11 400 Bad Request"
+96: Tunnel closed
+129: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:46 2023
+129: in cache, requires validation
+129: Requesting "GET / HTTP/11" from detectportal.firefox.com
+129: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+129: cached, expires at Tue Feb 28 19:45:46 2023
+129: Responding "HTTP/11 200 OK"
+129: Tunnel closed
+119: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:48 2023
+119: ERROR Bad Request
+119: Responding "HTTP/11 400 Bad Request"
+119: Tunnel closed
+130: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:49 2023
+130: in cache, requires validation
+130: Requesting "GET / HTTP/11" from detectportal.firefox.com
+130: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+130: cached, expires at Tue Feb 28 19:45:49 2023
+130: Responding "HTTP/11 200 OK"
+130: Tunnel closed
+128: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:49 2023
+128: ERROR Bad Request
+128: Responding "HTTP/11 400 Bad Request"
+128: Tunnel closed
+131: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:52 2023
+131: in cache, requires validation
+131: Requesting "GET / HTTP/11" from detectportal.firefox.com
+131: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+131: cached, expires at Tue Feb 28 19:45:52 2023
+131: Responding "HTTP/11 200 OK"
+131: Tunnel closed
+132: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:55 2023
+132: in cache, requires validation
+132: Requesting "GET / HTTP/11" from detectportal.firefox.com
+132: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+132: cached, expires at Tue Feb 28 19:45:55 2023
+132: Responding "HTTP/11 200 OK"
+132: Tunnel closed
+133: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:45:58 2023
+133: in cache, requires validation
+133: Requesting "GET / HTTP/11" from detectportal.firefox.com
+133: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+133: cached, expires at Tue Feb 28 19:45:58 2023
+133: Responding "HTTP/11 200 OK"
+133: Tunnel closed
+140: "CONNECT vac.vap.expedia.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:01 2023
+141: "CONNECT ib.adnxs.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:01 2023
+144: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:01 2023
+144: in cache, requires validation
+144: Requesting "GET / HTTP/11" from detectportal.firefox.com
+144: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+144: cached, expires at Tue Feb 28 19:46:01 2023
+144: Responding "HTTP/11 200 OK"
+144: Tunnel closed
+145: "CONNECT eb994321bf94a19746adbccd17be1157.safeframe.googlesyndication.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:02 2023
+146: "CONNECT safebrowsing.googleapis.com:443 HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:04 2023
+147: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:05 2023
+147: in cache, requires validation
+147: Requesting "GET / HTTP/11" from detectportal.firefox.com
+147: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+147: cached, expires at Tue Feb 28 19:46:05 2023
+147: Responding "HTTP/11 200 OK"
+147: Tunnel closed
+138: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:05 2023
+136: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:05 2023
+137: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:05 2023
+134: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:05 2023
+135: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:05 2023
+139: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:05 2023
+139: ERROR Bad Request
+139: Responding "HTTP/11 400 Bad Request"
+139: Tunnel closed
+137: ERROR Bad Request
+134: ERROR Bad Request
+136: ERROR Bad Request
+137: Responding "HTTP/11 400 Bad Request"
+137: Tunnel closed
+138: ERROR Bad Request
+134: Responding "HTTP/11 400 Bad Request"
+134: Tunnel closed
+138: Responding "HTTP/11 400 Bad Request"
+138: Tunnel closed
+135: ERROR Bad Request
+135: Responding "HTTP/11 400 Bad Request"
+135: Tunnel closed
+136: Responding "HTTP/11 400 Bad Request"
+136: Tunnel closed
+143: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:06 2023
+142: "  HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:06 2023
+143: ERROR Bad Request
+142: ERROR Bad Request
+142: Responding "HTTP/11 400 Bad Request"
+142: Tunnel closed
+143: Responding "HTTP/11 400 Bad Request"
+143: Tunnel closed
+148: "GET http://detectportal.firefox.com/canonical.html HTTP/11" from 174.109.109.181 @ Tue Feb 28 19:46:08 2023
+148: in cache, requires validation
+148: Requesting "GET / HTTP/11" from detectportal.firefox.com
+148: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+148: cached, expires at Tue Feb 28 19:46:08 2023
+148: Responding "HTTP/11 200 OK"
+148: Tunnel closed
