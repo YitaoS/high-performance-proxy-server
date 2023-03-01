@@ -80,8 +80,7 @@ bool CacheHandler::can_be_cached(const http::response<http::string_body> & resp)
   }
 }
 
-http::response<http::string_body> CacheHandler::get_cached_response(
-    std::string cache_key) {
+CachedResponse CacheHandler::get_cached_response(std::string cache_key) {
   CachedResponse cache_value = get(cache_key);
   return cache_value;
 }

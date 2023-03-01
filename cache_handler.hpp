@@ -28,7 +28,7 @@ class CacheHandler {
   std::string cached_response_state(const CachedResponse & cr,
                                     const http::request<http::string_body> & req);
 
-  CachedResponse CacheHandler::get_cached_response(std::string cache_key);
+  CachedResponse get_cached_response(std::string cache_key);
 };
 
 #endif  // CACHE_HANDLER
