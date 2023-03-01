@@ -18,3 +18,13 @@ Several functions in the code use the fail() function to report errors. However,
 
 Logging issues:
 The logging functions in the code may not work correctly or provide incomplete information, leading to difficulties in troubleshooting issues. It is essential to ensure that the logging system is reliable and provides enough information to diagnose and fix problems. 
+
+Program attempted to use destroyed lock:
+Description: During execution, the program attempted to use a lock that had already been destroyed. This caused unexpected behavior and potential data corruption.
+Steps to reproduce: Unclear, as the issue occurred intermittently. However, it seems to be related to concurrent access of the lock by multiple threads.
+Impact: The issue could lead to data corruption or loss of data integrity, depending on the context of the program.
+
+Response parsing occurs too early to determine status:
+Description: The program is parsing the response from a server too early in the process, which makes it difficult to determine the status of the response.
+Steps to reproduce: Send a request to the server and observe the program parsing the response before the status is fully determined.
+Impact: This issue can lead to incorrect program behavior or errors, as the program may assume the response is successful when it is actually not. This could also lead to data loss or security vulnerabilities if the program does not handle errors correctly.
