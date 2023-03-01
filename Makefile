@@ -9,14 +9,32 @@ LIBS = -lssl -lcrypto
 
 ###
 all: proxy 
-proxy: *.cpp
+proxy: proxy.o proxy_server.o session.o cache_handler.o http_parser.o cache.o log_writer.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
-%.o: %.cpp %.hpp
-	$(CC) $(CFLAGS) $< -o $@
+proxy.o:proxy.cpp proxy_server.hpp
+	$(CC) $(CFLAGS) -c $< -o $@ $(LIBS)
+
+proxy_server.o:proxy_server.cpp proxy_server.hpp session.hpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+session.o:session.cpp session.hpp cache_handler.hpp http_parser.hpp cache.hpp log_writer.hpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+cache_handler.o:cache_handler.cpp cache_handler.hpp cache.hpp log_writer.hpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+http_parser.o:http_parser.cpp http_parser.hpp cache.hpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+cache.o:cache.cpp cache.hpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+log_writer.o:log_writer.cpp log_writer.hpp
+	$(CC) $(CFLAGS) -c $< -o $@
 
 -include $(wildcard *.d)
 
-.PHNOY:
+.PHONY:
 clean:
-	rm -rf *~ *.o *.d proxy log.txt
+	rm -rf *~ *.o proxy log.txt
