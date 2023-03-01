@@ -24,3 +24,73 @@ std::string LogWriter::to_utc_string(const std::chrono::steady_clock::time_point
 
   return std::string(buf, std::strlen(buf));
 }
+
+void LogWriter::log_response_from_server(const http::response<http::string_body> & response,
+                              std::string server_name) {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": Receiving \""
+          << "HTTP/" << response.version() << " " << response.result_int() << " "
+          << response.reason() << "\" from " << server_name << std::endl;
+}
+
+void LogWriter::log_response_to_client(const http::response<http::string_body> & response) {
+    std::lock_guard<std::mutex> lock(log_mutex);
+    logfile << id << ": Responding \""
+            << "HTTP/" << response.version() << " " << response.result_int() << " "
+            << response.reason() << "\"" << std::endl;
+}
+
+void LogWriter::log_tunnel_closed() {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": Tunnel closed" << std::endl;
+}
+
+void LogWriter::log_note(std::string note) {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": NOTE " << note << std::endl;
+}
+
+void LogWriter::log_warning(std::string warning) {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": WARNING " << warning << std::endl;
+}
+
+void LogWriter::log_error(std::string error) {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": ERROR " << error << std::endl;
+}
+
+void LogWriter::log_not_in_cache() {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": not in cache" << std::endl;
+}
+
+void LogWriter::log_expired(std::chrono::steady_clock::time_point time) {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": in cache, but expired at " << to_utc_string(time) << std::endl;
+}
+
+void LogWriter::log_require_validation() {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": in cache, requires validation" << std::endl;
+}
+
+void LogWriter::log_valid() {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": in cache, valid" << std::endl;
+}
+
+void LogWriter::log_not_cacheable(std::string reason) {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": not cacheable because " << reason << std::endl;
+}
+
+void LogWriter::log_cached_with_expire_time(std::chrono::steady_clock::time_point time) {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": cached, expires at " << to_utc_string(time) << std::endl;
+}
+
+void LogWriter::log_cached_with_revalidation() {
+  std::lock_guard<std::mutex> lock(log_mutex);
+  logfile << id << ": cached, but requires re-validation" << std::endl;
+}
