@@ -27,7 +27,7 @@ int main(int argc, char * argv[]) {
 
     //create a stream for log writing
     // Create and launch a listening port
-    std::ofstream log_file("log.txt", std::ios_base::app);
+    std::ofstream log_file("/var/log/erss/log.txt", std::ios_base::app);
     std::make_shared<listener>(
         ioc, tcp::endpoint{address, port}, log_file, 50, global_mutex)
         ->run();

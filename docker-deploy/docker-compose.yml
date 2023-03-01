@@ -3,9 +3,10 @@ version: "2"
 services:
   http-proxy:
     build: ./src
+    user: root
     command: bash -c "./launch.sh"
     volumes:
-      - data-volume:/var/log/erss
+      - ./logs:/var/log/erss
       - ./src/my_proxy:/code
     ports:
       - "12345:12345"

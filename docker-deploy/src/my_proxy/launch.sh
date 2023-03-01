@@ -1,8 +1,8 @@
 #!/bin/bash
 
-make clean
-
 make
+
+chmod ug+w ./proxy
 
 while true
 do 

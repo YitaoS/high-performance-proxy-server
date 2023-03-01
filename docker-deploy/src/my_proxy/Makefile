@@ -37,4 +37,4 @@ log_writer.o:log_writer.cpp log_writer.hpp
 
 .PHONY:
 clean:
-	rm -rf *~ *.o *.d proxy log.txt
+	rm -rf *~ *.o *.d proxy 

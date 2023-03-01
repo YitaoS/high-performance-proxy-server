@@ -1,0 +1,49 @@
+0: "GET http://detectportal.firefox.com/canonical.html HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:30 2023
+0: not in cache
+0: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/11" from detectportal.firefox.com
+0: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+0: cached, expires at Wed Mar 01 08:02:30 2023
+0: Responding "HTTP/11 200 OK"
+0: Tunnel closed
+1: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:30 2023
+1: not in cache
+1: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/11" from detectportal.firefox.com
+1: Receiving "HTTP/11 200 OK" from detectportal.firefox.com
+1: cached, expires at Wed Mar 01 08:02:30 2023
+1: Responding "HTTP/11 200 OK"
+1: Tunnel closed
+2: "CONNECT mozilla.cloudflare-dns.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:33 2023
+3: "CONNECT www.youtube.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:33 2023
+4: "CONNECT i.ytimg.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:35 2023
+5: "CONNECT rr2---sn-hjoj-gq0l.googlevideo.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:36 2023
+6: "CONNECT ade.googlesyndication.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:36 2023
+7: "CONNECT yt3.ggpht.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:36 2023
+9: "CONNECT rr2---sn-hjoj-gq0l.googlevideo.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+10: "CONNECT pagead2.googlesyndication.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+11: "CONNECT googleads.g.doubleclick.net:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+12: "CONNECT rr4---sn-5ualdns6.googlevideo.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+13: "CONNECT rr2---sn-hjoj-gq0l.googlevideo.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+16: "CONNECT rr1---sn-5ualdnsr.googlevideo.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+17: "CONNECT rr4---sn-5ualdns6.googlevideo.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+8: "CONNECT tpc.googlesyndication.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+19: "CONNECT lh4.googleusercontent.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+18: "CONNECT yt3.googleusercontent.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+20: "CONNECT rr1---sn-5ualdnsr.googlevideo.com:443 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+21: "POST http://ocsp.pki.goog/gts1c3 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+21: Requesting "POST http://ocsp.pki.goog/gts1c3 HTTP/11" from ocsp.pki.goog
+21: Receiving "HTTP/11 200 OK" from ocsp.pki.goog
+21: Responding "HTTP/11 200 OK"
+21: Tunnel closed
+22: "POST http://ocsp.pki.goog/gts1c3 HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:37 2023
+22: Requesting "POST http://ocsp.pki.goog/gts1c3 HTTP/11" from ocsp.pki.goog
+22: Receiving "HTTP/11 200 OK" from ocsp.pki.goog
+22: Responding "HTTP/11 200 OK"
+22: Tunnel closed
+14: "  HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:42 2023
+15: "  HTTP/HTTP/1.1" from 24.163.80.61 @ Wed Mar 01 08:02:42 2023
+14: ERROR Bad Request
+15: ERROR Bad Request
+14: Responding "HTTP/11 400 Bad Request"
+14: Tunnel closed
+15: Responding "HTTP/11 400 Bad Request"
+15: Tunnel closed
