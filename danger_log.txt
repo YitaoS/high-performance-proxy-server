@@ -1,0 +1,20 @@
+Security vulnerability:
+The handle_connect_request() function sends an HTTP response to the client without verifying the client request. This may lead to a security vulnerability such as HTTP response splitting, where an attacker can inject malicious headers into the response and cause the client to execute unintended actions.
+
+Memory management issues:
+The shared_from_this() function is used several times in the code to create shared pointers to the current object. However, it is crucial to ensure that the object remains alive for as long as the shared pointers exist. Otherwise, the program may crash due to memory errors or undefined behavior.
+When meet situations where the client sends a invalid request, or the target server sends a invalid response, a response is needed to be created 
+and passed to the client. However, the proxy cannot create a request in a method and use the async_write function to send the response to the 
+client, because when calling the asynce_write function, the created request will go out of the scope and be automatically destructed, which caused NPE.
+
+Exception handling:
+The try-catch block in the on_connect_request() function catches all exceptions and sends a bad response to the client. However, it is essential to handle exceptions more specifically and provide appropriate error messages to the client to help diagnose the issue.
+
+Lack of input validation:
+The handle_get_request() function does not validate the input received from the client. This may lead to various issues such as buffer overflows, SQL injection, or cross-site scripting attacks.
+
+Lack of error handling:
+Several functions in the code use the fail() function to report errors. However, it is essential to handle errors more specifically and provide appropriate error messages to help diagnose the issue. Otherwise, it may be difficult to troubleshoot and fix errors in the code.
+
+Logging issues:
+The logging functions in the code may not work correctly or provide incomplete information, leading to difficulties in troubleshooting issues. It is essential to ensure that the logging system is reliable and provides enough information to diagnose and fix problems. 
